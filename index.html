@@ -199,7 +199,7 @@ dialog{border:0;padding:0;margin:auto;background:var(--bg);color:var(--ink);widt
 dialog::backdrop{background:var(--backdrop);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 #cook-content{height:100%}
 .cook{height:100%;display:flex;flex-direction:column}
-.cook-top{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px}
+.cook-top{display:grid;grid-template-columns:40px minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px}
 /* Schließen-Knopf in Kochmodus und Formular: runder, gefüllter Knopf mit kräftigem Kreuz, bündig mit dem Inhalt */
 .cook-top .icon-btn,.ed-top .icon-btn{position:relative;width:40px;height:40px;background:var(--tile);color:var(--ink);transition:background-color .2s ease,transform .15s ease}
 .cook-top .icon-btn::after,.ed-top .icon-btn::after{content:"";position:absolute;inset:-4px}
@@ -212,7 +212,7 @@ dialog::backdrop{background:var(--backdrop);-webkit-backdrop-filter:blur(6px);ba
 .cook-prog div{height:100%;background:var(--accent);transition:width .25s}
 .cook-list{flex:1;overflow:auto;list-style:none;margin:0;padding:4px 20px 24px}
 .cook-list li+li{border-top:1px solid var(--line)}
-.cook-step{display:grid;grid-template-columns:32px minmax(0,1fr);gap:14px;width:100%;padding:16px 0;text-align:left;color:var(--muted)}
+.cook-step{display:grid;grid-template-columns:32px minmax(0,1fr);gap:14px;width:100%;padding:16px 0;text-align:left;color:var(--muted);cursor:pointer;-webkit-user-select:none;user-select:none}
 .cook-step .n{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--line-strong);display:grid;place-items:center;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
 .cook-step .b{display:block;min-width:0}
 .cook-step .t{display:block;margin-top:4px;font-size:15.5px;line-height:1.5}
@@ -223,7 +223,8 @@ dialog::backdrop{background:var(--backdrop);-webkit-backdrop-filter:blur(6px);ba
 .cook-tabs{margin:12px 16px 4px}
 .cook-ings{flex:1;overflow:auto;padding:4px 20px 24px}
 .cook-ing{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-top:1px solid var(--line)}
-.cook-ing:first-child{border-top:0}
+.cook-ings-h{display:none;margin:0 0 6px;font-size:21px;font-weight:600;letter-spacing:-.022em}
+.cook-ings-h+.cook-ing{border-top:0}
 .cook-step.on{color:var(--ink)}
 .cook-step.on .n{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .cook-step.on .t{font-size:21px;font-weight:600;line-height:1.35;letter-spacing:-.022em;margin-top:1px}
@@ -233,7 +234,7 @@ dialog::backdrop{background:var(--backdrop);-webkit-backdrop-filter:blur(6px);ba
 
 /* Bearbeiten: nur sichtbar, wenn die Ansicht speichern darf */
 body:not(.can-edit) .edit-only{display:none!important}
-.tabs .add-tab{flex:0 0 64px;opacity:1}
+.tabs .add-tab{flex:0 0 60px;opacity:1}
 .add-tab i{width:48px;height:48px;box-shadow:0 4px 14px #0000ff59;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center}
 .ed{height:100%;display:flex;flex-direction:column}
 .ed-top{display:grid;grid-template-columns:40px minmax(0,1fr) 40px;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px;border-bottom:1px solid var(--line)}
@@ -287,7 +288,7 @@ body:not(.can-edit) .edit-only{display:none!important}
   .ed-top{padding:12px 16px}
   .ed-foot{padding:12px 20px 16px}
 }
-@media(min-width:900px){
+@media(min-width:760px){
   body.on-detail main{padding-top:80px;padding-bottom:40px}
   .nav-back{margin-left:-6px}
   .nav-back span{display:inline}
@@ -354,7 +355,7 @@ body:not(.can-edit) .edit-only{display:none!important}
 .src a{color:var(--accent-text);font-weight:500;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
 .d-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:18px}
 .d-row .btn.small{gap:7px;padding:0 17px 0 13px;font-weight:500}
-@media(min-width:900px){
+@media(min-width:760px){
   .d-row{gap:10px;margin-top:22px}
   .d-row .btn.small{min-height:54px;padding:0 22px 0 18px;font-size:16px}
 }
@@ -386,7 +387,7 @@ body:not(.can-edit) .edit-only{display:none!important}
 .timer-dock .tpill{pointer-events:auto}
 body.on-detail .timer-dock{bottom:calc(98px + env(safe-area-inset-bottom,0px))}
 @media(min-width:700px){.timer-dock{bottom:24px}}
-@media(min-width:900px){body.on-detail .timer-dock{bottom:24px}}
+@media(min-width:760px){body.on-detail .timer-dock{bottom:24px}}
 @media(prefers-reduced-motion:reduce){.tbtn.ring,.tpill.ring{animation:none}}
 
 /* Formular: drei Zahlenfelder nebeneinander, Merkmale zum Ankreuzen */
@@ -439,6 +440,102 @@ html.splashing{background:#0000ff}
 @keyframes splash-grain{0%{opacity:0;transform:translate(7px,-8px)}40%,82%{opacity:1;transform:none}100%{opacity:0;transform:none}}
 @media(prefers-reduced-motion:reduce){.splash,.splash-in{transition:none}.splash-in,.splash circle{animation:none}}
 @media print{.splash{display:none}}
+
+/* Zähler am Einkaufslisten-Reiter */
+.tabs button{position:relative}
+.tab-n{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:11px;font-weight:700;font-style:normal;line-height:1;font-variant-numeric:tabular-nums}
+.tabs .tab-n{position:absolute;top:5px;left:calc(50% + 6px)}
+.nav-link .tab-n{margin-left:6px}
+
+/* Kochmodus: immer bildschirmfüllend (auch auf iPad und Desktop), Vorlese-Knopf, Hinweis auf die Tippflächen */
+#cooking{width:100%;height:100%;max-width:none;max-height:none;border-radius:0}
+#cook-speak[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.cook-top #cook-speak svg{width:19px;height:19px;stroke-width:2}
+.cook-hint{margin:0;padding:8px 20px 10px;font-size:13px;color:var(--muted);text-align:center}
+@media(min-width:700px){
+  .cook-top{padding:calc(env(safe-area-inset-top,0px) + 16px) 28px 14px}
+  .cook-title{font-size:20px}
+  .cook-count{font-size:20px}
+  .cook-tabs{margin:14px 28px 6px;max-width:520px}
+  .cook-list{padding:8px 32px 32px}
+  .cook-step{grid-template-columns:40px minmax(0,1fr);gap:18px;padding:22px 0}
+  .cook-step .n{width:40px;height:40px;font-size:15px}
+  .cook-step .t{font-size:18px;max-width:46em}
+  .cook-step.on .t{font-size:28px;line-height:1.3}
+  .use{font-size:15px;padding:6px 12px}
+  .cook-step.on .use{font-size:17px;padding:8px 14px}
+  .step-timers{margin:-8px 0 22px 58px}
+  .cook-ings{padding:8px 32px 32px}
+  .cook-ing{font-size:18px;padding:15px 0}
+  .cook-timers{padding:12px 28px 0}
+  .cook-controls{padding:14px 28px calc(16px + env(safe-area-inset-bottom,0px))}
+  .cook-controls .btn{min-height:60px;font-size:18px}
+}
+/* Breite Schirme (iPad quer, Desktop): Schritte links, Zutaten dauerhaft rechts daneben */
+@media(min-width:960px){
+  .cook{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,400px);grid-template-rows:auto auto minmax(0,1fr) auto auto auto;grid-template-areas:"top top" "prog prog" "list ings" "hint ings" "timers ings" "controls ings"}
+  .cook-top{grid-area:top}
+  .cook-prog{grid-area:prog}
+  .cook-tabs{display:none}
+  .cook-list{grid-area:list}
+  .cook .cook-list[hidden]{display:block!important}
+  .cook-hint{grid-area:hint}
+  .cook-timers{grid-area:timers}
+  .cook-controls{grid-area:controls}
+  .cook-ings{grid-area:ings;border-left:1px solid var(--line);padding:24px 28px 32px;background:var(--tile)}
+  .cook .cook-ings[hidden]{display:block!important}
+  .cook-ings-h{display:block}
+  .cook-ing{font-size:17px}
+}
+
+/* Für mich: Gekocht-Vermerk und eigene Notiz am Ende des Rezepts */
+.mine{margin-top:24px;padding:16px;border-radius:22px;background:var(--tile);max-width:62ch}
+.mine-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.mine-info{margin:0;font-size:14.5px;color:var(--muted)}
+.mine-info b{color:var(--ink);font-weight:600}
+.mine .btn.ghost{background:var(--bg);gap:6px;font-weight:500}
+.mine .btn[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.mine-note{display:block;margin-top:14px}
+.mine-note span{display:block;margin-bottom:6px;font-size:13px;font-weight:600}
+.mine-note textarea{display:block;width:100%;min-height:64px;padding:12px 14px;font:inherit;font-size:16px;letter-spacing:inherit;line-height:1.45;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:14px;resize:vertical}
+.mine-note textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--tint)}
+.mine-hint{margin:10px 0 0;font-size:12.5px;color:var(--muted)}
+.toast-btn{font-weight:700;text-decoration:underline;text-underline-offset:3px;color:inherit}
+
+/* Einkaufsliste: Knopf unter den Zutaten und eigene Ansicht */
+.shop-add{width:100%;margin-top:16px;gap:8px;font-weight:500}
+.shop-add[aria-pressed="true"]{background:var(--tint);color:var(--accent-text);font-weight:600}
+@media(min-width:760px){.ings .shop-add{background:var(--bg)}.ings .shop-add[aria-pressed="true"]{background:var(--tint)}}
+.shop{padding-top:12px}
+.shop-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.shop-head h1{font-size:clamp(28px,5vw,40px);margin:0}
+.shop-actions{display:flex;gap:8px}
+.shop-actions .btn{gap:7px;font-weight:500}
+.shop .sec-head{margin:24px 0 8px}
+.shop-r{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line)}
+.shop-r-main{flex:1;min-width:0;display:flex;align-items:center;gap:12px}
+.shop-r-img{flex:none;width:52px;height:52px;border-radius:14px;overflow:hidden;background:var(--tint);color:var(--accent-text);display:grid;place-items:center}
+.shop-r-img img{display:block;width:100%;height:100%;object-fit:cover}
+.shop-r-name{min-width:0;font-size:16px;font-weight:600;line-height:1.25;letter-spacing:-.015em}
+.shop-r-name small{display:block;font-size:12.5px;font-weight:400;color:var(--muted)}
+.shop-r .stepper{flex:none}
+.shop-r .stepper button{width:36px;height:36px}
+.stepper-n{min-width:26px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.shop-x{width:36px;height:36px;color:var(--muted)}
+.shop .empty{margin-top:24px}
+@media(min-width:760px){
+  .shop-cols{display:grid;grid-template-columns:minmax(280px,380px) minmax(0,1fr);gap:8px 48px;align-items:start}
+  .shop-recipes{position:sticky;top:76px}
+}
+@media print{.mine,.shop-add{display:none!important}}
+/* iPad hochkant (760–899 px): zweispaltiges Rezept mit schmalerer Zutatenspalte */
+@media(min-width:760px) and (max-width:899px){
+  .detail{grid-template-columns:minmax(260px,310px) minmax(0,1fr);column-gap:32px;row-gap:28px}
+  .ings{padding:20px}
+  .d-row .btn.small{min-height:50px;padding:0 18px 0 14px}
+  .d-cook{flex:1 1 100%;min-height:50px;padding:0 20px;font-size:16px}
+  .d-row .btn.small{flex:1 1 0}
+}
 </style>
 </head>
 <body>
@@ -447,7 +544,7 @@ html.splashing{background:#0000ff}
 // ---------- Daten und Grundgerüst ----------
 let recipes=JSON.parse(document.getElementById('recipes-data').textContent);
 const PAGE_HEAD="<title>Pinch</title>\n<meta name=\"description\" content=\"Pinch – Konstantins Rezepte. Suchen, Portionen anpassen, Schritt für Schritt kochen.\">\n<meta name=\"apple-mobile-web-app-title\" content=\"Pinch\">\n<link rel=\"apple-touch-icon\" href=\"icon-180.png\">\n<link rel=\"icon\" type=\"image/png\" sizes=\"192x192\" href=\"icon-192.png\">\n<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap\">";
-const SHELL="<header class=\"nav glass\" id=\"nav\"><div class=\"wrap nav-in\">\n  <a class=\"nav-brand\" href=\"#\" data-go=\"\" aria-label=\"Pinch – zur Rezeptübersicht\" data-i18n-label=\"home\">\n    <svg viewBox=\"0 0 40 40\" width=\"32\" height=\"32\" fill=\"none\" aria-hidden=\"true\">\n      <g transform=\"rotate(-135 23 16)\" stroke=\"currentColor\" stroke-width=\"2.8\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M17 12h12l1.4 12.5a3 3 0 0 1-3 3.5h-8.8a3 3 0 0 1-3-3.5z\"/><path d=\"M17 12a6 6 0 0 1 12 0\"/></g>\n      <circle cx=\"11\" cy=\"29\" r=\"2.2\" fill=\"var(--accent)\"/><circle cx=\"16.5\" cy=\"33.5\" r=\"2\" fill=\"var(--accent)\"/><circle cx=\"7.5\" cy=\"35\" r=\"1.7\" fill=\"var(--accent)\"/>\n    </svg>\n    <span>pinch</span>\n  </a>\n  <a class=\"nav-back\" href=\"#\" data-go=\"\" aria-label=\"Zurück zur Übersicht\" data-i18n-label=\"backHome\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m14.5 5.5-6.5 6.5 6.5 6.5\"/></svg><span data-i18n=\"recipesTitle\">Rezepte</span></a>\n  <button class=\"nav-title\" id=\"nav-title\" tabindex=\"-1\" aria-hidden=\"true\"></button>\n  <div class=\"nav-right\">\n    <button class=\"nav-link\" data-tab=\"home\" data-i18n=\"recipesTitle\">Rezepte</button>\n    <button class=\"nav-link\" data-tab=\"fav\" data-i18n=\"favorites\">Favoriten</button>\n    <button class=\"nav-lang\" id=\"nav-lang\" data-i18n-label=\"langSwitch\"><span data-l=\"de\">DE</span><span data-l=\"en\">EN</span></button>\n    <button class=\"nav-icon nav-up\" id=\"nav-up\" aria-label=\"Nach oben springen\" data-i18n-label=\"up\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 19V5m-6 6 6-6 6 6\"/></svg></button>\n    <button class=\"nav-icon nav-edit edit-only\" id=\"nav-edit\" aria-label=\"Rezept bearbeiten\" data-i18n-label=\"edit\"><svg viewBox=\"0 0 24 24\" width=\"19\" height=\"19\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 20h4L19 9l-4-4L4 16z\"/><path d=\"m13.5 6.5 4 4\"/></svg></button>\n    <button class=\"nav-icon nav-fav\" id=\"nav-fav\" aria-label=\"Als Favorit speichern\" aria-pressed=\"false\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg></button>\n    <button class=\"nav-pill nav-cook\" data-cook data-i18n=\"cook\">Kochmodus</button>\n    <button class=\"nav-pill nav-new edit-only\" data-new><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg><span data-i18n=\"newRecipe\">Neues Rezept</span></button>\n  </div>\n</div></header>\n<main id=\"app\" lang=\"de\"></main>\n<footer class=\"wrap\"><div class=\"foot\"><span data-i18n=\"foot\">Pinch · Konstantins Rezepte</span><span id=\"foot-count\"></span></div></footer>\n<nav class=\"tabs\" aria-label=\"Bereiche\" data-i18n-label=\"sections\">\n  <button data-tab=\"home\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 11.2 12 4l8 7.2V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z\"/></svg><span data-i18n=\"recipesTitle\">Rezepte</span></button>\n  <button class=\"add-tab edit-only\" data-new aria-label=\"Neues Rezept\" data-i18n-label=\"newRecipe\"><i><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></i></button>\n  <button data-tab=\"fav\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg><span data-i18n=\"favorites\">Favoriten</span></button>\n</nav>\n<div class=\"timer-dock\" id=\"timer-dock\"></div>\n<div class=\"toast\" id=\"toast\" role=\"status\" hidden></div>\n<dialog id=\"cooking\" aria-label=\"Kochmodus\" data-i18n-label=\"cook\"><div id=\"cook-content\"></div></dialog>\n<dialog id=\"editor\" aria-labelledby=\"ed-title\"><form id=\"ed-form\" class=\"ed\" novalidate>\n  <div class=\"ed-top\"><button type=\"button\" class=\"icon-btn\" id=\"ed-close\" aria-label=\"Schließen\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M6 6l12 12M18 6 6 18\"/></svg></button><h2 id=\"ed-title\">Neues Rezept</h2><span></span></div>\n  <div class=\"ed-body\">\n    <div class=\"import\" id=\"ed-import\" hidden>\n      <span class=\"imp-title\">Automatisch erkennen</span>\n      <small>Wähle Screenshots, Fotos oder ein PDF des Rezepts, oder füge den Rezepttext ein. Claude füllt das Formular aus; du prüfst und speicherst. Bei einem Link: Website als PDF sichern oder Screenshots machen.</small>\n      <div class=\"imp-row\"><label class=\"btn ghost small\" id=\"imp-shot-label\">Bild oder PDF wählen<input id=\"imp-shot\" type=\"file\" accept=\"image/*,application/pdf,.pdf\" multiple class=\"sr\"></label></div>\n      <textarea id=\"imp-text\" rows=\"3\" placeholder=\"Rezepttext hier einfügen\" aria-label=\"Rezepttext zum Erkennen\"></textarea>\n      <div class=\"imp-row\"><button type=\"button\" class=\"btn ghost small\" id=\"imp-run\">Text erkennen</button><button type=\"button\" class=\"btn ghost small\" id=\"imp-stop\" hidden>Abbrechen</button></div>\n      <p id=\"imp-status\" role=\"status\"></p>\n    </div>\n    <label class=\"fld\"><span>Name</span><input id=\"f-name\" maxlength=\"80\" autocomplete=\"off\"></label>\n    <div class=\"fld-row\">\n      <label class=\"fld\"><span>Kategorie</span><select id=\"f-category\"></select></label>\n      <label class=\"fld\"><span>Küche</span><select id=\"f-cuisine\"></select></label>\n    </div>\n    <div class=\"fld-row three\">\n      <label class=\"fld\"><span>Portionen</span><input id=\"f-portions\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"100\"></label>\n      <label class=\"fld\"><span>Gesamt (Min.)</span><input id=\"f-time\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"2880\" placeholder=\"z. B. 90\"></label>\n      <label class=\"fld\"><span>Aktiv (Min.)</span><input id=\"f-active\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"2880\" placeholder=\"z. B. 30\"></label>\n    </div>\n    <p class=\"fld-note\">Gesamt zählt Warte-, Geh-, Kühl- und Backzeiten mit. Aktiv ist die reine Arbeitszeit; leer lassen, wenn beides gleich ist.</p>\n    <label class=\"fld\"><span>Kurzbeschreibung</span><input id=\"f-tag\" placeholder=\"z. B. Knusprig · schnell\" maxlength=\"80\" autocomplete=\"off\"></label>\n    <label class=\"fld\"><span>Quelle</span><small>Link zum Originalrezept oder Video, falls es einen gibt.</small><input id=\"f-source\" type=\"url\" inputmode=\"url\" placeholder=\"https://…\" maxlength=\"300\" autocomplete=\"off\"></label>\n    <div class=\"fld\"><span>Merkmale</span><small>„Schnell“ vergibt die Seite selbst, wenn die Gesamtzeit höchstens 30 Minuten beträgt.</small><div class=\"checks\"><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-vegetarisch\"><span>Vegetarisch</span></label><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-gaeste\"><span>Für Gäste</span></label><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-vorbereiten\"><span>Gut vorzubereiten</span></label></div></div>\n    <div class=\"fld\"><span>Foto des Gerichts</span><small>JPG oder PNG. Aus einem PDF wird das Foto automatisch übernommen.</small><div class=\"photo-row\"><img id=\"f-photo-preview\" alt=\"\" hidden><label class=\"btn ghost small\">Foto wählen<input id=\"f-photo\" type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr\"></label><button type=\"button\" class=\"btn ghost small\" id=\"f-photo-remove\" hidden>Entfernen</button></div><p id=\"f-photo-status\" class=\"fld-note\" role=\"status\"></p></div>\n    <label class=\"fld\"><span>Zutaten</span><small>Eine pro Zeile, Menge zuerst: 200 g Mehl · 2 EL Olivenöl · Salz</small><textarea id=\"f-ingredients\" rows=\"7\"></textarea></label>\n    <div id=\"f-parse\" class=\"parse\" aria-live=\"polite\"></div>\n    <label class=\"fld\"><span>Zubereitung</span><small>Ein Schritt pro Zeile.</small><textarea id=\"f-steps\" rows=\"7\"></textarea></label>\n    <label class=\"fld\"><span>Notiz</span><textarea id=\"f-note\" rows=\"2\"></textarea></label>\n    <button type=\"button\" class=\"link-danger\" id=\"ed-delete\" hidden>Rezept löschen</button>\n  </div>\n  <div class=\"ed-foot\"><p id=\"ed-status\" role=\"status\"></p><button class=\"btn primary\" id=\"ed-save\" type=\"submit\">Speichern</button></div>\n</form></dialog>";
+const SHELL="<header class=\"nav glass\" id=\"nav\"><div class=\"wrap nav-in\">\n  <a class=\"nav-brand\" href=\"#\" data-go=\"\" aria-label=\"Pinch – zur Rezeptübersicht\" data-i18n-label=\"home\">\n    <svg viewBox=\"0 0 40 40\" width=\"32\" height=\"32\" fill=\"none\" aria-hidden=\"true\">\n      <g transform=\"rotate(-135 23 16)\" stroke=\"currentColor\" stroke-width=\"2.8\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M17 12h12l1.4 12.5a3 3 0 0 1-3 3.5h-8.8a3 3 0 0 1-3-3.5z\"/><path d=\"M17 12a6 6 0 0 1 12 0\"/></g>\n      <circle cx=\"11\" cy=\"29\" r=\"2.2\" fill=\"var(--accent)\"/><circle cx=\"16.5\" cy=\"33.5\" r=\"2\" fill=\"var(--accent)\"/><circle cx=\"7.5\" cy=\"35\" r=\"1.7\" fill=\"var(--accent)\"/>\n    </svg>\n    <span>pinch</span>\n  </a>\n  <a class=\"nav-back\" href=\"#\" data-go=\"\" aria-label=\"Zurück zur Übersicht\" data-i18n-label=\"backHome\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m14.5 5.5-6.5 6.5 6.5 6.5\"/></svg><span data-i18n=\"recipesTitle\">Rezepte</span></a>\n  <button class=\"nav-title\" id=\"nav-title\" tabindex=\"-1\" aria-hidden=\"true\"></button>\n  <div class=\"nav-right\">\n    <button class=\"nav-link\" data-tab=\"home\" data-i18n=\"recipesTitle\">Rezepte</button>\n    <button class=\"nav-link\" data-tab=\"fav\" data-i18n=\"favorites\">Favoriten</button>\n    <button class=\"nav-link\" data-tab=\"shop\"><span data-i18n=\"shopping\">Einkaufsliste</span><i class=\"tab-n\" hidden></i></button>\n    <button class=\"nav-lang\" id=\"nav-lang\" data-i18n-label=\"langSwitch\"><span data-l=\"de\">DE</span><span data-l=\"en\">EN</span></button>\n    <button class=\"nav-icon nav-up\" id=\"nav-up\" aria-label=\"Nach oben springen\" data-i18n-label=\"up\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 19V5m-6 6 6-6 6 6\"/></svg></button>\n    <button class=\"nav-icon nav-edit edit-only\" id=\"nav-edit\" aria-label=\"Rezept bearbeiten\" data-i18n-label=\"edit\"><svg viewBox=\"0 0 24 24\" width=\"19\" height=\"19\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 20h4L19 9l-4-4L4 16z\"/><path d=\"m13.5 6.5 4 4\"/></svg></button>\n    <button class=\"nav-icon nav-fav\" id=\"nav-fav\" aria-label=\"Als Favorit speichern\" aria-pressed=\"false\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg></button>\n    <button class=\"nav-pill nav-cook\" data-cook data-i18n=\"cook\">Kochmodus</button>\n    <button class=\"nav-pill nav-new edit-only\" data-new><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg><span data-i18n=\"newRecipe\">Neues Rezept</span></button>\n  </div>\n</div></header>\n<main id=\"app\" lang=\"de\"></main>\n<footer class=\"wrap\"><div class=\"foot\"><span data-i18n=\"foot\">Pinch · Konstantins Rezepte</span><span id=\"foot-count\"></span></div></footer>\n<nav class=\"tabs\" aria-label=\"Bereiche\" data-i18n-label=\"sections\">\n  <button data-tab=\"home\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 11.2 12 4l8 7.2V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z\"/></svg><span data-i18n=\"recipesTitle\">Rezepte</span></button>\n  <button data-tab=\"fav\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg><span data-i18n=\"favorites\">Favoriten</span></button>\n  <button data-tab=\"shop\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4.5 9.5h15l-1.4 8.8a2 2 0 0 1-2 1.7H7.9a2 2 0 0 1-2-1.7z\"/><path d=\"M8.5 9.5 12 4l3.5 5.5\"/></svg><span data-i18n=\"shopTab\">Einkauf</span><i class=\"tab-n\" hidden></i></button>\n  <button class=\"add-tab edit-only\" data-new aria-label=\"Neues Rezept\" data-i18n-label=\"newRecipe\"><i><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></i></button>\n</nav>\n<div class=\"timer-dock\" id=\"timer-dock\"></div>\n<div class=\"toast\" id=\"toast\" role=\"status\" hidden></div>\n<dialog id=\"cooking\" aria-label=\"Kochmodus\" data-i18n-label=\"cook\"><div id=\"cook-content\"></div></dialog>\n<dialog id=\"editor\" aria-labelledby=\"ed-title\"><form id=\"ed-form\" class=\"ed\" novalidate>\n  <div class=\"ed-top\"><button type=\"button\" class=\"icon-btn\" id=\"ed-close\" aria-label=\"Schließen\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M6 6l12 12M18 6 6 18\"/></svg></button><h2 id=\"ed-title\">Neues Rezept</h2><span></span></div>\n  <div class=\"ed-body\">\n    <div class=\"import\" id=\"ed-import\" hidden>\n      <span class=\"imp-title\">Automatisch erkennen</span>\n      <small>Wähle Screenshots, Fotos oder ein PDF des Rezepts, oder füge den Rezepttext ein. Claude füllt das Formular aus; du prüfst und speicherst. Bei einem Link: Website als PDF sichern oder Screenshots machen.</small>\n      <div class=\"imp-row\"><label class=\"btn ghost small\" id=\"imp-shot-label\">Bild oder PDF wählen<input id=\"imp-shot\" type=\"file\" accept=\"image/*,application/pdf,.pdf\" multiple class=\"sr\"></label></div>\n      <textarea id=\"imp-text\" rows=\"3\" placeholder=\"Rezepttext hier einfügen\" aria-label=\"Rezepttext zum Erkennen\"></textarea>\n      <div class=\"imp-row\"><button type=\"button\" class=\"btn ghost small\" id=\"imp-run\">Text erkennen</button><button type=\"button\" class=\"btn ghost small\" id=\"imp-stop\" hidden>Abbrechen</button></div>\n      <p id=\"imp-status\" role=\"status\"></p>\n    </div>\n    <label class=\"fld\"><span>Name</span><input id=\"f-name\" maxlength=\"80\" autocomplete=\"off\"></label>\n    <div class=\"fld-row\">\n      <label class=\"fld\"><span>Kategorie</span><select id=\"f-category\"></select></label>\n      <label class=\"fld\"><span>Küche</span><select id=\"f-cuisine\"></select></label>\n    </div>\n    <div class=\"fld-row three\">\n      <label class=\"fld\"><span>Portionen</span><input id=\"f-portions\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"100\"></label>\n      <label class=\"fld\"><span>Gesamt (Min.)</span><input id=\"f-time\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"2880\" placeholder=\"z. B. 90\"></label>\n      <label class=\"fld\"><span>Aktiv (Min.)</span><input id=\"f-active\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"2880\" placeholder=\"z. B. 30\"></label>\n    </div>\n    <p class=\"fld-note\">Gesamt zählt Warte-, Geh-, Kühl- und Backzeiten mit. Aktiv ist die reine Arbeitszeit; leer lassen, wenn beides gleich ist.</p>\n    <label class=\"fld\"><span>Kurzbeschreibung</span><input id=\"f-tag\" placeholder=\"z. B. Knusprig · schnell\" maxlength=\"80\" autocomplete=\"off\"></label>\n    <label class=\"fld\"><span>Quelle</span><small>Link zum Originalrezept oder Video, falls es einen gibt.</small><input id=\"f-source\" type=\"url\" inputmode=\"url\" placeholder=\"https://…\" maxlength=\"300\" autocomplete=\"off\"></label>\n    <div class=\"fld\"><span>Merkmale</span><small>„Schnell“ vergibt die Seite selbst, wenn die Gesamtzeit höchstens 30 Minuten beträgt.</small><div class=\"checks\"><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-vegetarisch\"><span>Vegetarisch</span></label><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-gaeste\"><span>Für Gäste</span></label><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-vorbereiten\"><span>Gut vorzubereiten</span></label></div></div>\n    <div class=\"fld\"><span>Foto des Gerichts</span><small>JPG oder PNG. Aus einem PDF wird das Foto automatisch übernommen.</small><div class=\"photo-row\"><img id=\"f-photo-preview\" alt=\"\" hidden><label class=\"btn ghost small\">Foto wählen<input id=\"f-photo\" type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr\"></label><button type=\"button\" class=\"btn ghost small\" id=\"f-photo-remove\" hidden>Entfernen</button></div><p id=\"f-photo-status\" class=\"fld-note\" role=\"status\"></p></div>\n    <label class=\"fld\"><span>Zutaten</span><small>Eine pro Zeile, Menge zuerst: 200 g Mehl · 2 EL Olivenöl · Salz</small><textarea id=\"f-ingredients\" rows=\"7\"></textarea></label>\n    <div id=\"f-parse\" class=\"parse\" aria-live=\"polite\"></div>\n    <label class=\"fld\"><span>Zubereitung</span><small>Ein Schritt pro Zeile.</small><textarea id=\"f-steps\" rows=\"7\"></textarea></label>\n    <label class=\"fld\"><span>Notiz</span><textarea id=\"f-note\" rows=\"2\"></textarea></label>\n    <button type=\"button\" class=\"link-danger\" id=\"ed-delete\" hidden>Rezept löschen</button>\n  </div>\n  <div class=\"ed-foot\"><p id=\"ed-status\" role=\"status\"></p><button class=\"btn primary\" id=\"ed-save\" type=\"submit\">Speichern</button></div>\n</form></dialog>";
 document.body.insertAdjacentHTML('beforeend',SHELL);
 
 // ---------- Startbild: blaue Fläche mit Logo, nur auf der öffentlichen Website (zum Testen: ?splash) ----------
@@ -503,7 +600,10 @@ const STR={
   home:'Pinch – zur Rezeptübersicht',backHome:'Zurück zur Übersicht',up:'Nach oben springen',edit:'Rezept bearbeiten',cook:'Kochmodus',newRecipe:'Neues Rezept',foot:'Pinch · Konstantins Rezepte',sections:'Bereiche',langSwitch:'Sprache: Deutsch. Auf Englisch umschalten',cuisine:'Küche',allCuisines:'Alle Küchen',
   sec:' Sek.',active:' aktiv',total:' gesamt',traits:'Merkmale',source:'Quelle',
   filter:'Filter',filterReset:'Zurücksetzen',share:'Rezept teilen',shareShort:'Teilen',print:'Drucken',linkCopied:'Link kopiert',linkManual:'Link zum Kopieren:',printOff:'Drucken geht in dieser Ansicht nicht.',openSite:'Rezept auf der Website öffnen',
-  timerStart:'Timer starten: ',timerStop:'Timer beenden',timerDone:'Fertig',timerOpen:'Zum Schritt springen',timers:'Laufende Timer',stepN:'Schritt '},
+  timerStart:'Timer starten: ',timerStop:'Timer beenden',timerDone:'Fertig',timerOpen:'Zum Schritt springen',timers:'Laufende Timer',stepN:'Schritt ',
+  speak:'Schritte vorlesen',tapHint:'Tippe rechts für weiter, links für zurück.',jumpStep:'Zu Schritt ',
+  mine:'Für mich',cookedBtn:'Heute gekocht',cookedNone:'Noch nicht gekocht',cookedN:'× gekocht',cookedLast:'zuletzt am ',cookedToast:'Als gekocht vermerkt',undo:'Rückgängig',myNote:'Meine Notiz',myNotePh:'Was du beim nächsten Mal anders machst',mineHint:'Vermerk und Notiz sind nur auf diesem Gerät gespeichert.',
+  shopping:'Einkaufsliste',shopTab:'Einkauf',shopAdd:'Auf die Einkaufsliste',shopOn:'Auf der Einkaufsliste',shopChange:'Menge auf der Einkaufsliste anpassen',shopView:'Ansehen',shopEmpty:'Die Einkaufsliste ist leer',shopEmptyText:'Öffne ein Rezept und tippe unter den Zutaten auf „Auf die Einkaufsliste“.',showRecipes:'Rezepte ansehen',shopOpen:' offen',shopClear:'Leeren',shopClearSure:'Wirklich leeren?',shopCopied:'Liste kopiert',shopNoCopy:'Kopieren geht in dieser Ansicht nicht.',shopRemove:'Von der Liste nehmen',shopDeviceNote:'Die Liste ist nur auf diesem Gerät gespeichert. Geteilt wird, was noch nicht abgehakt ist.'},
  en:{recipes:['recipe','recipes'],servings:['serving','servings'],steps:['step','steps'],variations:'variations',approx:'approx. ',min:' min',hr:' h',
   favOn:'Remove from favorites',favOff:'Save as favorite',
   noFavs:'No favorites yet',noFavsText:'Tap the heart on a recipe and it will show up here.',emptyCat:'Nothing in ',emptyCatText:'As soon as a recipe is in this category, it will show up here.',nothing:'Nothing found',nothingText:'Try a different ingredient, category or cuisine.',addRecipe:'Add recipe',showAll:'Show all recipes',
@@ -514,7 +614,10 @@ const STR={
   home:'Pinch – back to all recipes',backHome:'Back to all recipes',up:'Jump to top',edit:'Edit recipe',cook:'Cook mode',newRecipe:'New recipe',foot:'Pinch · Konstantin’s recipes',sections:'Sections',langSwitch:'Language: English. Switch to German',cuisine:'Cuisine',allCuisines:'All cuisines',
   sec:' sec',active:' active',total:' total',traits:'Features',source:'Source',
   filter:'Filters',filterReset:'Reset',share:'Share recipe',shareShort:'Share',print:'Print',linkCopied:'Link copied',linkManual:'Link to copy:',printOff:'Printing is not available in this view.',openSite:'Open the recipe on the website',
-  timerStart:'Start timer: ',timerStop:'Stop timer',timerDone:'Done',timerOpen:'Jump to step',timers:'Running timers',stepN:'Step '}
+  timerStart:'Start timer: ',timerStop:'Stop timer',timerDone:'Done',timerOpen:'Jump to step',timers:'Running timers',stepN:'Step ',
+  speak:'Read steps aloud',tapHint:'Tap right for next, left for back.',jumpStep:'Go to step ',
+  mine:'For me',cookedBtn:'Cooked today',cookedNone:'Not cooked yet',cookedN:'× cooked',cookedLast:'last on ',cookedToast:'Marked as cooked',undo:'Undo',myNote:'My note',myNotePh:'What you would do differently next time',mineHint:'Your mark and note are only saved on this device.',
+  shopping:'Shopping list',shopTab:'Shopping',shopAdd:'Add to shopping list',shopOn:'On the shopping list',shopChange:'Update amount on the shopping list',shopView:'View',shopEmpty:'Your shopping list is empty',shopEmptyText:'Open a recipe and tap “Add to shopping list” below the ingredients.',showRecipes:'Browse recipes',shopOpen:' to get',shopClear:'Clear',shopClearSure:'Really clear?',shopCopied:'List copied',shopNoCopy:'Copying is not available in this view.',shopRemove:'Remove from list',shopDeviceNote:'The list is only saved on this device. Sharing sends whatever is not ticked off yet.'}
 };
 let lang='de';
 try{const s=localStorage.getItem('pinch-lang');lang=s==='de'||s==='en'?s:(/^de\b/i.test(navigator.language||'de')?'de':'en');}catch{}
@@ -546,7 +649,7 @@ function setLang(next){
  lang=next;
  try{localStorage.setItem('pinch-lang',next);}catch{}
  applyLang();
- if(activeRecipe)setPortions(portions,false);else library();
+ if(activeRecipe)setPortions(portions,false);else home();
  renderTimers();
 }
 
@@ -646,6 +749,8 @@ const path={
  calendar:'<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M8 3.5v4M16 3.5v4M4 10h16"/><path d="m9.3 15 2 2 3.5-3.7"/>',
  share:'<path d="M12 14.5V3.5m-3.8 3.6L12 3.3l3.8 3.8"/><path d="M8 10.5H6.5A1.5 1.5 0 0 0 5 12v7a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-7a1.5 1.5 0 0 0-1.5-1.5H16"/>',
  filter:'<path d="M4.5 7h15M7.5 12h9M10.5 17h3"/>',
+ basket:'<path d="M4.5 9.5h15l-1.4 8.8a2 2 0 0 1-2 1.7H7.9a2 2 0 0 1-2-1.7z"/><path d="M8.5 9.5 12 4l3.5 5.5"/>',
+ speaker:'<path d="M4 9.5v5h3.5l4.5 4v-13l-4.5 4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.6 7.6 0 0 1 0 11"/>',
  printer:'<path d="M7.5 8V4h9v4"/><rect x="4" y="8" width="16" height="8.5" rx="2"/><path d="M7.5 13.5h9V20h-9z"/>',
  link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
  utensils:'<path d="M7 3v18M4.5 3v4.5a2.5 2.5 0 0 0 5 0V3"/><path d="M17 21V3c-2 1.6-3 4.4-3 8h3"/>'
@@ -661,7 +766,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const plural=(n,one,many)=>n+' '+(n===1?one:many);
 let saved=[];
 try{saved=JSON.parse(localStorage.getItem('kochbuch-favorites')||'[]');if(!Array.isArray(saved))saved=[];}catch{saved=[];}
-let favoriteOnly=false,category='Alle',cuisine='Alle',traitSel=[],query='',activeRecipe=null,variantIndex=0,portions=1,cookStep=0;
+let favoriteOnly=false,shopOpen=false,category='Alle',cuisine='Alle',traitSel=[],query='',activeRecipe=null,variantIndex=0,portions=1,cookStep=0;
 
 const BASE_CATS=['Vorspeisen','Hauptspeisen','Desserts','Backen'];   // immer sichtbar, auch wenn noch leer
 const ORDER=['Vorspeisen','Suppen','Salate','Hauptspeisen','Beilagen','Desserts','Backen','Frühstück','Getränke'];
@@ -682,7 +787,7 @@ const basePortions=r=>r.defaultPortions||r.variants[0].portions;
 const thumb=p=>p.replace(/\.jpg$/,'-s.jpg');
 function updateNav(){
  document.body.classList.toggle('on-detail',!!activeRecipe);
- const current=activeRecipe?'':favoriteOnly?'fav':'home';
+ const current=activeRecipe?'':shopOpen?'shop':favoriteOnly?'fav':'home';
  document.querySelectorAll('[data-tab]').forEach(b=>{if(b.dataset.tab===current)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
  $('#nav-title').textContent=activeRecipe?rName(activeRecipe):'';
  const fav=$('#nav-fav'),edit=$('#nav-edit');
@@ -691,12 +796,12 @@ function updateNav(){
   fav.dataset.favorite=activeRecipe.id;fav.setAttribute('aria-pressed',on);fav.setAttribute('aria-label',heartLabel(on));
   edit.dataset.edit=activeRecipe.id;edit.hidden=activeRecipe.variants.length!==1;
  }else{delete fav.dataset.favorite;delete edit.dataset.edit;}
- updateBar();
+ shopBadge();updateBar();
 }
 // Zustand der Leiste: durchsichtig über dem Rezeptfoto (schmale Ansicht), sonst Milchglas; Linie, Titel und Zusatzknöpfe erst beim Scrollen.
 function updateBar(){
  const nav=$('#nav'),hero=document.querySelector('.hero'),title=document.querySelector('.d-info h1');
- const overHero=!!activeRecipe&&!!hero&&matchMedia('(max-width:899px)').matches&&hero.getBoundingClientRect().bottom>72;
+ const overHero=!!activeRecipe&&!!hero&&matchMedia('(max-width:759px)').matches&&hero.getBoundingClientRect().bottom>72;
  nav.classList.toggle('glass',!overHero);
  nav.classList.toggle('scrolled',activeRecipe?!!title&&title.getBoundingClientRect().bottom<64:window.scrollY>160);
 }
@@ -773,11 +878,12 @@ function detail(r,reset=true){
   +'<div class="ings-col"><section class="ings"><div class="ings-head"><h2>'+tx('ingredients')+'</h2><div class="stepper" role="group" aria-label="'+tx('servingsLabel')+'"><button id="minus" aria-label="'+tx('less')+'" '+(portions<=1?'disabled':'')+'>−</button><input id="portions" type="number" inputmode="numeric" min="1" max="100" step="1" aria-label="'+tx('wanted')+'" value="'+portions+'"><button id="plus" aria-label="'+tx('more')+'" '+(portions>=100?'disabled':'')+'>+</button></div></div>'
   +(r.variants.length>1?'<div class="seg" role="group" aria-label="'+tx('chooseVariant')+'">'+r.variants.map((x,i)=>'<button data-variant="'+i+'" aria-pressed="'+(i===variantIndex)+'">'+esc(vText(r,i).name)+'</button>').join('')+'</div>':'')
   +'<p class="basis">'+nOf(portions,'servings')+' · '+tx('recipeFor')+(v.approx?tx('approx'):'')+v.portions+(exact?'':tx('scaled'))+'</p>'
-  +'<div id="ingredient-list">'+v.ingredients.map((i,n)=>'<label class="ing"><input type="checkbox" id="ingredient-'+n+'" data-ingredient="'+n+'"><span class="ing-name">'+ingredientName(vx.ingredients[n])+'</span><span class="amount">'+amount(i,v)+'</span></label>').join('')+'</div></section></div>'
+  +'<div id="ingredient-list">'+v.ingredients.map((i,n)=>'<label class="ing"><input type="checkbox" id="ingredient-'+n+'" data-ingredient="'+n+'"><span class="ing-name">'+ingredientName(vx.ingredients[n])+'</span><span class="amount">'+amount(i,v)+'</span></label>').join('')+'</div>'+shopButton(r)+'</section></div>'
   +'<section class="steps"><h2>'+tx('method')+'</h2><ol class="step-list">'+vx.steps.map((s,i)=>'<li class="step"><span class="step-n">'+(i+1)+'</span><p>'+esc(adjustStep(s,r,v))+'</p></li>').join('')+'</ol>'
   +(vx.note?'<div class="note">'+esc(vx.note)+'</div>':'')
   +(src?'<p class="src">'+tx('source')+': <a href="'+esc(src.href)+'" target="_blank" rel="noopener noreferrer">'+esc(src.host)+'</a></p>':'')
-  +'<p class="fine">'+tx('fine')+'</p></section>'
+  +'<p class="fine">'+tx('fine')+'</p>'
+  +'<div class="mine" id="mine" role="group" aria-label="'+tx('mine')+'">'+mineHtml(r)+'</div></section>'
   +'<nav class="browse" aria-label="'+tx('moreRecipes')+'">'+(index>0?'<a href="#'+recipes[index-1].id+'" data-go="'+recipes[index-1].id+'">'+icon('left',18)+'<span>'+esc(rName(recipes[index-1]))+'</span></a>':'')+(index<recipes.length-1?'<a href="#'+recipes[index+1].id+'" data-go="'+recipes[index+1].id+'"><span>'+esc(rName(recipes[index+1]))+'</span>'+icon('right',18)+'</a>':'')+'</nav>'
   +'</div><div class="cta-bar"><button class="btn primary" data-cook>'+tx('startCook')+'</button></div></article>';
  $('#portions').addEventListener('change',e=>{const x=Number(e.target.value);setPortions(Number.isFinite(x)&&x>0?Math.round(x):portions);});
@@ -818,17 +924,19 @@ function openCook(){
   const used=stepUses(v,i).map(n=>v.ingredients[n]).filter(Boolean);
   return used.length?'<span class="uses">'+used.map(g=>{const [main,...rest]=label(g).split(' · ');return '<span class="use">'+(qty(g)?'<b>'+esc(qty(g))+(g.unit?'':'×')+'</b> ':'')+esc(main)+(rest.join(' ').includes('optional')?' (optional)':'')+'</span>';}).join('')+'</span>':'';
  };
- $('#cook-content').innerHTML='<div class="cook"><div class="cook-top"><button id="close-cook" class="icon-btn" aria-label="'+tx('closeCook')+'">'+icon('x',20)+'</button><span class="cook-title">'+esc(rName(r))+'</span><span class="cook-count" id="cook-count" aria-live="polite"></span></div><div class="cook-prog"><div id="cook-bar"></div></div>'
+ $('#cook-content').innerHTML='<div class="cook"><div class="cook-top"><button id="close-cook" class="icon-btn" aria-label="'+tx('closeCook')+'">'+icon('x',20)+'</button><span class="cook-title">'+esc(rName(r))+'</span>'+(canSpeak?'<button id="cook-speak" class="icon-btn" aria-pressed="'+speakOn+'" aria-label="'+tx('speak')+'">'+icon('speaker',19,2)+'</button>':'<span></span>')+'<span class="cook-count" id="cook-count" aria-live="polite"></span></div><div class="cook-prog"><div id="cook-bar"></div></div>'
   +'<div class="seg cook-tabs" role="group" aria-label="'+tx('view')+'"><button data-cooktab="steps" aria-pressed="true">'+tx('stepsTab')+'</button><button data-cooktab="ings" aria-pressed="false">'+tx('ingredients')+' · '+nOf(portions,'servings')+'</button></div>'
   +'<ol class="cook-list" id="cook-list">'+vx.steps.map((s,i)=>{
    const text=adjustStep(s,r,v),times=durations(text);
-   return '<li><button class="cook-step" data-step="'+i+'"><span class="n"></span><span class="b"><span class="t">'+esc(text)+'</span>'+chips(i)+'</span></button>'
+   return '<li><div class="cook-step"><button class="n" data-step="'+i+'" aria-label="'+tx('jumpStep')+(i+1)+'"></button><span class="b"><span class="t">'+esc(text)+'</span>'+chips(i)+'</span></div>'
     +(times.length?'<div class="step-timers">'+times.map(secs=>'<button class="tbtn" data-timer="'+esc(tkey(i,secs))+'" data-secs="'+secs+'" data-step-n="'+i+'">'+icon('clock',16,2)+'<span></span></button>').join('')+'</div>':'')+'</li>';
   }).join('')+'</ol>'
-  +'<div class="cook-ings" id="cook-ings" hidden>'+v.ingredients.map(g=>'<div class="cook-ing"><span class="ing-name">'+ingredientName(label(g))+'</span><span class="amount">'+(qty(g)?esc(qty(g)):tx('asNeeded'))+'</span></div>').join('')+'</div>'
+  +'<p class="cook-hint" id="cook-hint"'+(tapHint?'':' hidden')+'>'+tx('tapHint')+'</p>'
+  +'<div class="cook-ings" id="cook-ings" hidden><h3 class="cook-ings-h">'+tx('ingredients')+' · '+nOf(portions,'servings')+'</h3>'+v.ingredients.map(g=>'<div class="cook-ing"><span class="ing-name">'+ingredientName(label(g))+'</span><span class="amount">'+(qty(g)?esc(qty(g)):tx('asNeeded'))+'</span></div>').join('')+'</div>'
   +'<div class="cook-timers" id="cook-timers" role="group" aria-label="'+tx('timers')+'"></div>'
   +'<div class="cook-controls"><button class="btn ghost" id="prev-step">'+icon('left',18)+' '+tx('back')+'</button><button class="btn primary" id="next-step"></button></div></div>';
  cooking.showModal();cookUpdate(false);renderTimers();syncWake();
+ if(speakOn)speakStep();
 }
 function cookTab(tab){
  $('#cook-list').hidden=tab!=='steps';$('#cook-ings').hidden=tab!=='ings';
@@ -849,8 +957,45 @@ function cookUpdate(scroll=true){
 }
 function cookGo(to){
  const n=activeRecipe.variants[variantIndex].steps.length;
- if(to>=n){closeCook();return;}
+ if(to>=n){
+  // Letzter Schritt erledigt: Kochmodus schließen und das Rezept für heute als gekocht vermerken (lässt sich zurücknehmen)
+  const r=activeRecipe,fresh=!cookedToday(r.id);
+  closeCook();
+  if(fresh){setCooked(r.id,true);refreshMine();toast(icon('check',16,2.6)+esc(tx('cookedToast'))+' <button class="toast-btn" data-cooked-undo="'+esc(r.id)+'">'+tx('undo')+'</button>',6000);}
+  return;
+ }
  cookStep=Math.max(0,to);cookTab('steps');cookUpdate();
+ if(speakOn)speakStep();
+}
+// Vorlesen: liest den aktuellen Schritt, sobald er wechselt. Der Knopf im Kochmodus schaltet es ein und aus.
+const canSpeak='speechSynthesis' in window&&typeof SpeechSynthesisUtterance==='function';
+let speakOn=false,tapHint=true;
+try{speakOn=canSpeak&&localStorage.getItem('pinch-speak')==='1';tapHint=localStorage.getItem('pinch-taphint')!=='1';}catch{}
+function stopSpeak(){try{if(canSpeak)speechSynthesis.cancel();}catch{}}
+function speakStep(){
+ if(!canSpeak)return;
+ const el=document.querySelector('.cook-step.on .t');
+ if(!el)return;
+ let text=el.textContent.replace(/(\d)\s*[–-]\s*(\d)/g,lang==='en'?'$1 to $2':'$1 bis $2');
+ text=lang==='en'?text.replace(/°C/g,' degrees Celsius').replace(/\btbsp\b/g,'tablespoons').replace(/\btsp\b/g,'teaspoons'):text.replace(/°C/g,' Grad').replace(/\bEL\b/g,'Esslöffel').replace(/\bTL\b/g,'Teelöffel').replace(/\bca\./g,'circa');
+ stopSpeak();
+ // kurze Pause nach dem Abbrechen, sonst verschluckt Safari die neue Ansage
+ setTimeout(()=>{try{const say=new SpeechSynthesisUtterance(tx('stepN')+(cookStep+1)+'. '+text);say.lang=lang==='en'?'en-GB':'de-DE';speechSynthesis.speak(say);}catch{}},80);
+}
+function toggleSpeak(){
+ speakOn=!speakOn;
+ try{localStorage.setItem('pinch-speak',speakOn?'1':'0');}catch{}
+ const b=$('#cook-speak');
+ if(b)b.setAttribute('aria-pressed',speakOn);
+ if(speakOn)speakStep();else stopSpeak();
+}
+cooking.addEventListener('close',stopSpeak);
+function tapHintOff(){
+ if(!tapHint)return;
+ tapHint=false;
+ try{localStorage.setItem('pinch-taphint','1');}catch{}
+ const el=$('#cook-hint');
+ if(el)el.hidden=true;
 }
 cooking.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();cookGo(cookStep+1);}if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();cookGo(cookStep-1);}});
 
@@ -939,9 +1084,150 @@ function gotoTimer(key){
  cookGo(t.step);
 }
 
+// ---------- Für mich: Gekocht-Vermerk und eigene Notiz, nur auf diesem Gerät gespeichert ----------
+const local={get(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v&&typeof v==='object'?v:fallback;}catch{return fallback;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}};
+let cooked=local.get('pinch-cooked',{}),notes=local.get('pinch-notes',{});
+const dayKey=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());};
+const cookedOf=id=>Array.isArray(cooked[id])?cooked[id]:[];
+const cookedToday=id=>cookedOf(id).slice(-1)[0]===dayKey();
+function setCooked(id,on){
+ const list=cookedOf(id).filter(d=>d!==dayKey());
+ if(on)list.push(dayKey());
+ if(list.length)cooked[id]=list.slice(-60);else delete cooked[id];
+ local.set('pinch-cooked',cooked);
+}
+const fmtDay=key=>{const [y,m,d]=key.split('-').map(Number);try{return new Intl.DateTimeFormat(lang==='en'?'en-GB':'de-DE',{day:'numeric',month:'long',year:'numeric'}).format(new Date(y,m-1,d));}catch{return key;}};
+function mineHtml(r){
+ const list=cookedOf(r.id),on=cookedToday(r.id);
+ return '<div class="mine-row"><p class="mine-info">'+(list.length?'<b>'+list.length+tx('cookedN')+'</b> · '+tx('cookedLast')+esc(fmtDay(list[list.length-1])):tx('cookedNone'))+'</p>'
+  +'<button class="btn ghost small" data-cooked aria-pressed="'+on+'">'+icon('check',17,2.4)+tx('cookedBtn')+'</button></div>'
+  +'<label class="mine-note"><span>'+tx('myNote')+'</span><textarea id="my-note" rows="2" maxlength="1000" placeholder="'+tx('myNotePh')+'">'+esc(notes[r.id]||'')+'</textarea></label>'
+  +'<p class="mine-hint">'+tx('mineHint')+'</p>';
+}
+function refreshMine(){const el=$('#mine');if(el&&activeRecipe)el.innerHTML=mineHtml(activeRecipe);}
+document.addEventListener('input',e=>{
+ if(e.target.id!=='my-note'||!activeRecipe)return;
+ const text=e.target.value.trim();
+ if(text)notes[activeRecipe.id]=text.slice(0,1000);else delete notes[activeRecipe.id];
+ local.set('pinch-notes',notes);
+});
+
+// ---------- Einkaufsliste: Rezepte mit Portionenzahl, gleiche Zutaten zusammengezählt; nur auf diesem Gerät gespeichert ----------
+let shop=local.get('pinch-shop',{items:[],done:[]});
+if(!Array.isArray(shop.items))shop.items=[];
+if(!Array.isArray(shop.done))shop.done=[];
+const shopValid=()=>shop.items.filter(it=>{const r=recipes.find(x=>x.id===it.id);return !!r&&!!r.variants[it.vi]&&it.p>0;});
+const shopItem=(r,vi)=>shop.items.find(it=>it.id===r.id&&it.vi===vi);
+function shopBadge(){const n=shopValid().length;document.querySelectorAll('.tab-n').forEach(el=>{el.textContent=n||'';el.hidden=!n;});}
+const keepShop=()=>{local.set('pinch-shop',shop);shopBadge();};
+// Gleiche Zutat = gleicher Name vor dem " · " (Einzahl und Mehrzahl auf -n zählen zusammen) und gleiche Einheit.
+const shopKey=name=>normalize(name.split(' · ')[0]).replace(/n$/,'');
+function shopQty(a,b,unit,name){
+ if((unit==='g'||unit==='ml')&&a>=1000){a/=1000;if(b!==null)b/=1000;unit=unit==='g'?'kg':'l';}
+ a=roundQty(a,unit,name);
+ if(b!==null){b=roundQty(b,unit,name);if(b<=a)b=null;}
+ return showNumber(a,unit)+(b!==null?'–'+showNumber(b,unit):'')+(unit?' '+unitLabel(unit,b??a):'');
+}
+function shopLines(){
+ const groups=new Map();
+ shopValid().forEach(it=>{
+  const r=recipes.find(x=>x.id===it.id),v=r.variants[it.vi],f=it.p/v.portions,names=vText(r,it.vi).ingredients;
+  v.ingredients.forEach((g,n)=>{
+   const key=shopKey(g.name);
+   if(!groups.has(key))groups.set(key,{key,name:names[n].split(' · ')[0],raw:g.name,units:new Map(),from:new Set()});
+   const group=groups.get(key);
+   group.from.add(rName(r));
+   if(g.amount===null)return;
+   let unit=g.unit,a=g.amount*f,b=g.max===null?null:g.max*f;
+   if(unit==='kg'||unit==='l'){a*=1000;if(b!==null)b*=1000;unit=unit==='kg'?'g':'ml';}
+   const sum=group.units.get(unit)||{a:0,b:0,range:false};
+   sum.a+=a;sum.b+=b===null?a:b;sum.range=sum.range||b!==null;
+   group.units.set(unit,sum);
+  });
+ });
+ const lines=[];
+ groups.forEach(group=>{
+  const from=[...group.from];
+  if(!group.units.size)lines.push({id:group.key+'|',name:group.name,qty:'',from});
+  group.units.forEach((sum,unit)=>lines.push({id:group.key+'|'+unit,name:group.name,qty:shopQty(sum.a,sum.range?sum.b:null,unit,group.raw),from}));
+ });
+ return lines;
+}
+function shopButton(r){
+ const it=shopItem(r,variantIndex),same=!!it&&it.p===portions;
+ return '<button class="btn ghost small shop-add" data-shop-add aria-pressed="'+same+'">'+icon(same?'check':'basket',18,same?2.4:2)+tx(same?'shopOn':it?'shopChange':'shopAdd')+'</button>';
+}
+function shopping(){
+ activeRecipe=null;updateNav();
+ const items=shopValid(),lines=shopLines(),many=items.length>1;
+ shop.done=shop.done.filter(id=>lines.some(l=>l.id===id));
+ const open=lines.filter(l=>!shop.done.includes(l.id)).length;
+ app.innerHTML='<div class="wrap shop"><div class="shop-head"><h1>'+tx('shopping')+'</h1>'
+  +(items.length?'<div class="shop-actions"><button class="btn ghost small" data-shop-share>'+icon('share',18)+tx('shareShort')+'</button><button class="btn ghost small" id="shop-clear">'+tx('shopClear')+'</button></div>':'')+'</div>'
+  +(items.length?'<div class="shop-cols"><section class="shop-recipes"><div class="sec-head"><h2>'+tx('recipesTitle')+'</h2><span class="count">'+nOf(items.length,'recipes')+'</span></div>'
+   +items.map(it=>{
+    const r=recipes.find(x=>x.id===it.id),n=shop.items.indexOf(it),photo=r.variants[it.vi].photo||r.photo;
+    return '<div class="shop-r"><a class="shop-r-main" href="#'+r.id+'" data-go="'+r.id+'"><span class="shop-r-img">'+(photo?'<img src="'+esc(thumb(photo))+'" alt="" loading="lazy">':catIcon(r.category,22,1.6))+'</span><span class="shop-r-name">'+esc(rName(r))+(r.variants.length>1?'<small>'+esc(vText(r,it.vi).name)+'</small>':'')+'</span></a>'
+     +'<div class="stepper" role="group" aria-label="'+tx('servingsLabel')+'"><button data-shop-less="'+n+'" aria-label="'+tx('less')+'"'+(it.p<=1?' disabled':'')+'>−</button><span class="stepper-n">'+it.p+'</span><button data-shop-more="'+n+'" aria-label="'+tx('more')+'"'+(it.p>=100?' disabled':'')+'>+</button></div>'
+     +'<button class="icon-btn shop-x" data-shop-remove="'+n+'" aria-label="'+tx('shopRemove')+'">'+icon('x',17,2.4)+'</button></div>';
+   }).join('')
+   +'</section><section class="shop-items"><div class="sec-head"><h2>'+tx('ingredients')+'</h2><span class="count" id="shop-open" aria-live="polite">'+open+tx('shopOpen')+'</span></div><div id="shop-list">'
+   +lines.map(l=>'<label class="ing"><input type="checkbox" data-shop-done="'+esc(l.id)+'"'+(shop.done.includes(l.id)?' checked':'')+'><span class="ing-name">'+esc(l.name)+(many?'<small>'+esc(l.from.join(' · '))+'</small>':'')+'</span><span class="amount">'+esc(l.qty)+'</span></label>').join('')
+   +'</div><p class="fine">'+tx('shopDeviceNote')+'</p></section></div>'
+   :'<div class="empty"><h3>'+tx('shopEmpty')+'</h3><p>'+tx('shopEmptyText')+'</p><button class="btn primary" data-tab="home">'+tx('showRecipes')+'</button></div>')
+  +'</div>';
+ keepShop();updateBar();
+}
+const home=()=>shopOpen?shopping():library();
+document.addEventListener('change',e=>{
+ const box=e.target.closest&&e.target.closest('[data-shop-done]');
+ if(!box)return;
+ const id=box.dataset.shopDone;
+ shop.done=box.checked?[...new Set([...shop.done,id])]:shop.done.filter(x=>x!==id);
+ keepShop();
+ const left=$('#shop-open');
+ if(left)left.textContent=document.querySelectorAll('[data-shop-done]:not(:checked)').length+tx('shopOpen');
+});
+async function shareShop(){
+ const text=shopLines().filter(l=>!shop.done.includes(l.id)).map(l=>(l.qty?l.qty+' ':'')+l.name).join('\n');
+ if(!text)return;
+ if(navigator.share){try{await navigator.share({title:tx('shopping'),text});return;}catch(e){if(e&&e.name==='AbortError')return;}}
+ try{await navigator.clipboard.writeText(text);toast(icon('check',16,2.6)+esc(tx('shopCopied')));}catch{toast(esc(tx('shopNoCopy')),5000);}
+}
+// Klicks rund um Einkaufsliste und Vermerk; liefert true, wenn der Klick hier erledigt wurde
+function mineClick(hit){
+ if(hit('[data-cooked]')){setCooked(activeRecipe.id,!cookedToday(activeRecipe.id));refreshMine();return true;}
+ const undo=hit('[data-cooked-undo]');
+ if(undo){setCooked(undo.dataset.cookedUndo,false);refreshMine();$('#toast').hidden=true;return true;}
+ if(hit('[data-shop-add]')){
+  const r=activeRecipe,it=shopItem(r,variantIndex);
+  if(it&&it.p===portions){favoriteOnly=false;shopOpen=true;home();window.scrollTo(0,0);return true;}
+  if(it)it.p=portions;else shop.items.push({id:r.id,vi:variantIndex,p:portions});
+  keepShop();setPortions(portions,false);
+  toast(icon('check',16,2.6)+esc(tx('shopOn'))+' <button class="toast-btn" data-tab="shop">'+tx('shopView')+'</button>',5000);
+  return true;
+ }
+ const less=hit('[data-shop-less]'),more=hit('[data-shop-more]'),gone=hit('[data-shop-remove]');
+ if(less||more||gone){
+  const n=Number((less||more||gone).dataset[less?'shopLess':more?'shopMore':'shopRemove']),it=shop.items[n];
+  if(!it)return true;
+  if(gone)shop.items.splice(n,1);else it.p=Math.min(100,Math.max(1,it.p+(more?1:-1)));
+  shopping();return true;
+ }
+ if(hit('[data-shop-share]')){shareShop();return true;}
+ const clear=hit('#shop-clear');
+ if(clear){
+  if(!clear.dataset.armed){clear.dataset.armed='1';clear.textContent=tx('shopClearSure');setTimeout(()=>{if(clear.isConnected){clear.dataset.armed='';clear.textContent=tx('shopClear');}},3500);return true;}
+  shop={items:[],done:[]};shopping();return true;
+ }
+ return false;
+}
+
 // ---------- Teilen und Drucken ----------
 // Geteilt wird immer die Adresse der öffentlichen Website, auch aus der Claude-Ansicht heraus.
-const siteLink=r=>SITE_URL+'#'+encodeURIComponent(r.id);
+// Die Website hat je Rezept eine kleine Seite mit Titel und Foto für die Link-Vorschau (…/r/udon/); sync.py meldet das über
+// PINCH_PREVIEW. Ohne diese Meldung (Claude-Ansicht, ältere Fassung der Website) bleibt es beim Anker (…#udon).
+const siteLink=r=>SITE_URL+(window.PINCH_PREVIEW?'r/'+encodeURIComponent(r.id)+'/':'#'+encodeURIComponent(r.id));
 let toastId=0;
 function toast(html,ms=2600){const el=$('#toast');el.innerHTML=html;el.hidden=false;clearTimeout(toastId);toastId=setTimeout(()=>{el.hidden=true;},ms);}
 async function shareRecipe(){
@@ -974,7 +1260,7 @@ function printRecipe(){
 function navigate(id){
  const r=recipes.find(x=>x.id===id);
  closeCook();
- if(r)detail(r);else library();
+ if(r)detail(r);else home();
  window.scrollTo(0,0);updateBar();
 }
 document.addEventListener('click',e=>{
@@ -989,10 +1275,11 @@ document.addEventListener('click',e=>{
  if(hit('#nav-up')||hit('#nav-title')){toTop();return;}
  if(hit('#nav-lang')){setLang(lang==='de'?'en':'de');return;}
  if(editorClick(hit))return;
+ if(mineClick(hit))return;
  const go=hit('[data-go]');
  if(go){e.preventDefault();navigate(go.dataset.go);return;}
  const tab=hit('[data-tab]');
- if(tab){favoriteOnly=tab.dataset.tab==='fav';closeCook();library();window.scrollTo(0,0);return;}
+ if(tab){favoriteOnly=tab.dataset.tab==='fav';shopOpen=tab.dataset.tab==='shop';$('#toast').hidden=true;closeCook();home();window.scrollTo(0,0);return;}
  const trait=hit('[data-trait]');
  if(trait){const t=trait.dataset.trait;traitSel=traitSel.includes(t)?traitSel.filter(x=>x!==t):[...traitSel,t];renderGrid();return;}
  const kitchen=hit('[data-cuisine]');
@@ -1013,12 +1300,20 @@ document.addEventListener('click',e=>{
  if(hit('[data-print]')){printRecipe();return;}
  const step=hit('[data-step]');
  if(step){cookGo(Number(step.dataset.step));return;}
+ if(hit('#cook-speak')){toggleSpeak();return;}
+ // Große Tippflächen im Kochmodus: rechte Hälfte der Schrittliste = weiter, linke = zurück (Knöpfe ausgenommen)
+ const zone=hit('#cook-list');
+ if(zone&&!hit('button')){
+  const box=zone.getBoundingClientRect(),n=activeRecipe.variants[variantIndex].steps.length;
+  if(e.clientX>box.left+box.width/2){if(cookStep<n-1)cookGo(cookStep+1);}else if(cookStep>0)cookGo(cookStep-1);
+  tapHintOff();return;
+ }
  if(hit('#close-cook')){closeCook();return;}
  if(hit('#prev-step')){cookGo(cookStep-1);return;}
  if(hit('#next-step')){cookGo(cookStep+1);return;}
  if(hit('[data-cook]')){openCook();return;}
  if(hit('#clear')){query='';$('#search').value='';renderGrid();$('#search').focus();}
- if(hit('#reset')){query='';category='Alle';cuisine='Alle';traitSel=[];favoriteOnly=false;library();}
+ if(hit('#reset')){query='';category='Alle';cuisine='Alle';traitSel=[];favoriteOnly=false;shopOpen=false;library();}
  if(hit('#minus'))setPortions(portions-1);
  if(hit('#plus'))setPortions(portions+1);
 });
