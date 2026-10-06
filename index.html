@@ -22,18 +22,18 @@
 :root{
   --bg:#ffffff;--tile:#f5f5f7;--ink:#1d1d1f;--muted:#6e6e73;--line:#e8e8ed;--line-strong:#d2d2d7;
   --accent:#0000ff;--accent-text:#0000ff;--on-accent:#ffffff;--tint:#e5e5ff;
-  --bar:#ffffffcc;--hair:#00000024;--float:#ffffff;--float-ink:#1c1b1f;--shadow:#1c1b1f14;--backdrop:#1c1b1f8c;--danger:#c4332b;
+  --bar:#ffffff3d;--glass:blur(9px) saturate(180%) brightness(1.06);--glass-edge:#ffffffb3;--glass-shine:#ffffffd9;--glass-shadow:#1c1b1f24;--float:#ffffff;--float-ink:#1c1b1f;--shadow:#1c1b1f14;--backdrop:#1c1b1f8c;--danger:#c4332b;
   --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Inter','Helvetica Neue',Arial,sans-serif;
   --gutter:clamp(16px,4vw,40px);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#000000;--tile:#1c1c1e;--ink:#f5f5f7;--muted:#a1a1a6;--line:#2c2c2e;--line-strong:#48484a;
   --accent:#0000ff;--accent-text:#8c8cff;--on-accent:#ffffff;--tint:#0d0d40;
-  --bar:#161617cc;--hair:#ffffff2e;--float:#1c1c1e;--float-ink:#f5f5f7;--shadow:#00000080;--backdrop:#000000b3;--danger:#ff6961;color-scheme:dark}}
+  --bar:#2c2c2e3d;--glass:blur(9px) saturate(180%) brightness(.8);--glass-edge:#ffffff26;--glass-shine:#ffffff29;--glass-shadow:#00000099;--float:#1c1c1e;--float-ink:#f5f5f7;--shadow:#00000080;--backdrop:#000000b3;--danger:#ff6961;color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#000000;--tile:#1c1c1e;--ink:#f5f5f7;--muted:#a1a1a6;--line:#2c2c2e;--line-strong:#48484a;
   --accent:#0000ff;--accent-text:#8c8cff;--on-accent:#ffffff;--tint:#0d0d40;
-  --bar:#161617cc;--hair:#ffffff2e;--float:#1c1c1e;--float-ink:#f5f5f7;--shadow:#00000080;--backdrop:#000000b3;--danger:#ff6961;color-scheme:dark}
+  --bar:#2c2c2e3d;--glass:blur(9px) saturate(180%) brightness(.8);--glass-edge:#ffffff26;--glass-shine:#ffffff29;--glass-shadow:#00000099;--float:#1c1c1e;--float-ink:#f5f5f7;--shadow:#00000080;--backdrop:#000000b3;--danger:#ff6961;color-scheme:dark}
 
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.47;letter-spacing:-.011em;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
@@ -54,11 +54,12 @@ h2{font-weight:600;font-size:21px;line-height:1.2;letter-spacing:-.022em;margin:
 
 /* Kopf und Navigation */
 /* Leiste oben: immer da, Milchglas mit feiner Linie; über dem Rezeptfoto zunächst durchsichtig mit runden Knöpfen */
-.nav{position:fixed;top:0;left:0;right:0;z-index:30;padding-top:env(safe-area-inset-top,0px);border-bottom:1px solid transparent;transition:background-color .25s ease,border-color .25s ease}
-.nav.glass{background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px)}
-.nav.lined{border-bottom-color:var(--hair)}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.nav.glass{background:var(--bg)}}
-.nav-in{height:52px;display:flex;align-items:center;gap:6px}
+/* Flüssiges Glas: die Leiste schwebt als abgerundete, stark durchscheinende Kapsel mit heller Kante über dem Inhalt */
+.nav{position:fixed;top:0;left:0;right:0;z-index:30;padding:calc(env(safe-area-inset-top,0px) + 8px) calc(var(--gutter) - 8px) 0;pointer-events:none}
+.nav-in{pointer-events:auto;max-width:calc(1120px - 2*var(--gutter) + 16px);height:52px;margin-inline:auto;padding:0 6px 0 12px;display:flex;align-items:center;gap:6px;border:1px solid transparent;border-radius:26px;transition:background-color .25s ease,border-color .25s ease,box-shadow .25s ease}
+.nav.glass .nav-in,.nav:not(.glass) .nav-icon,.nav:not(.glass) .nav-back{background:var(--bar);-webkit-backdrop-filter:var(--glass);backdrop-filter:var(--glass);border:1px solid var(--glass-edge);box-shadow:0 8px 28px var(--glass-shadow),inset 0 1px 0 var(--glass-shine)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.nav.glass .nav-in,.nav:not(.glass) .nav-icon,.nav:not(.glass) .nav-back{background:var(--bg)}}
+.nav:not(.glass) .nav-in{padding-inline:6px}
 .nav-brand{display:flex;align-items:center;gap:6px;min-height:44px;font-weight:700;font-size:22px;letter-spacing:-.04em}
 .nav-brand svg{display:block}
 .nav-back{display:none;align-items:center;gap:2px;height:40px;margin-left:-8px;padding-right:10px;border-radius:999px;font-size:17px;color:var(--accent-text);flex:none}
@@ -67,7 +68,6 @@ h2{font-weight:600;font-size:21px;line-height:1.2;letter-spacing:-.022em;margin:
 .nav.scrolled .nav-title{opacity:1;transform:none;pointer-events:auto}
 .nav-right{display:flex;align-items:center;gap:4px;margin-left:auto;flex:none}
 .nav-icon{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none}
-.nav:not(.glass) .nav-icon,.nav:not(.glass) .nav-back{background:var(--float);color:var(--float-ink);box-shadow:0 2px 10px var(--shadow)}
 .nav:not(.glass) .nav-back{width:40px;margin-left:0;padding:0;justify-content:center}
 .nav-up{display:none}
 .nav.scrolled .nav-up{display:grid}
@@ -82,7 +82,7 @@ body:not(.on-detail) .nav-fav,body:not(.on-detail) .nav-edit,body:not(.on-detail
 .tabs button{flex:1;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11.5px;font-weight:600;color:var(--muted)}
 .tabs button[aria-current="page"]{color:var(--ink);font-weight:700}
 .tabs button[aria-current="page"] svg{color:var(--accent);fill:var(--accent)}
-main{padding-top:52px;padding-bottom:104px}
+main{padding-top:68px;padding-bottom:104px}
 body.on-detail .tabs{display:none}
 body.on-detail main{padding-top:0;padding-bottom:0}
 .foot{display:none}
@@ -254,11 +254,11 @@ body:not(.can-edit) .edit-only{display:none!important}
   .ed-foot{padding:12px 20px 16px}
 }
 @media(min-width:900px){
-  body.on-detail main{padding-top:64px;padding-bottom:40px}
+  body.on-detail main{padding-top:80px;padding-bottom:40px}
   .nav-back{margin-left:-6px}
   .nav-back span{display:inline}
   .nav-title{text-align:left;padding-left:14px}
-  .nav.scrolled .nav-cook{display:inline-flex}
+  body.on-detail .nav.scrolled .nav-cook{display:inline-flex}
   .detail{max-width:1120px;margin:8px auto 0;padding-inline:var(--gutter);display:grid;grid-template-columns:minmax(320px,440px) minmax(0,1fr);column-gap:56px;row-gap:40px;align-items:start}
   .hero,.hero.blank{grid-column:1;grid-row:1;aspect-ratio:1/1;max-height:none;border-radius:28px}
   .hero.blank{aspect-ratio:4/3}
@@ -266,7 +266,7 @@ body:not(.can-edit) .edit-only{display:none!important}
   .d-info{grid-column:2;grid-row:1;align-self:center}
   .d-cook{display:inline-flex}
   .ings-col{grid-column:1;grid-row:2;align-self:stretch;min-width:0}
-  .ings{margin:0;background:var(--tile);border-radius:28px;padding:24px;position:sticky;top:70px;max-height:calc(100vh - 86px);overflow:auto}
+  .ings{margin:0;background:var(--tile);border-radius:28px;padding:24px;position:sticky;top:76px;max-height:calc(100vh - 92px);overflow:auto}
   .ings .seg{background:var(--bg)}
   .steps{grid-column:2;grid-row:2;margin:0}
   .browse{grid-column:1/-1;margin-top:0}
@@ -394,10 +394,9 @@ function updateNav(){
 // Zustand der Leiste: durchsichtig über dem Rezeptfoto (schmale Ansicht), sonst Milchglas; Linie, Titel und Zusatzknöpfe erst beim Scrollen.
 function updateBar(){
  const nav=$('#nav'),hero=document.querySelector('.hero'),title=document.querySelector('.d-info h1');
- const overHero=!!activeRecipe&&!!hero&&matchMedia('(max-width:899px)').matches&&hero.getBoundingClientRect().bottom>64;
+ const overHero=!!activeRecipe&&!!hero&&matchMedia('(max-width:899px)').matches&&hero.getBoundingClientRect().bottom>72;
  nav.classList.toggle('glass',!overHero);
- nav.classList.toggle('lined',!overHero&&window.scrollY>4);
- nav.classList.toggle('scrolled',activeRecipe?!!title&&title.getBoundingClientRect().bottom<56:window.scrollY>160);
+ nav.classList.toggle('scrolled',activeRecipe?!!title&&title.getBoundingClientRect().bottom<64:window.scrollY>160);
 }
 addEventListener('scroll',updateBar,{passive:true});
 addEventListener('resize',updateBar);
