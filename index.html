@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Pinch</title>
 <meta name="description" content="Pinch – Konstantins Rezepte. Suchen, Portionen anpassen, Schritt für Schritt kochen.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pinch">
+<meta property="og:title" content="Pinch – Konstantins Rezepte">
+<meta property="og:description" content="Suchen, Portionen anpassen, Schritt für Schritt kochen.">
+<meta property="og:image" content="https://konstantinsalvamoser.github.io/pinch/icon-512.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Pinch">
@@ -1823,6 +1828,19 @@ editor.addEventListener('close',()=>{if(importCtl)importCtl.abort();});
  };
  addEventListener('popstate',()=>{let id='';try{id=decodeURIComponent(location.hash.slice(1));}catch{}show(id);});
 })();
+</script>
+<script>
+// Nur für die eigenständige Website: Unter r/<id>/ liegt je Rezept eine Seite für die Link-Vorschau; Teilen nutzt dann diese Adresse.
+window.PINCH_PREVIEW=true;
+</script>
+<script>
+// Nur für die eigenständige Website: sw.js legt die Seite und die Fotos im Gerät ab, damit sie ohne Netz nutzbar bleibt.
+if('serviceWorker' in navigator)addEventListener('load',()=>{
+ navigator.serviceWorker.register('sw.js').then(()=>navigator.serviceWorker.ready).then(reg=>{
+  const photos=[...new Set(recipes.flatMap(r=>[r,...r.variants]).map(o=>o.photo).filter(p=>typeof p==='string'&&!p.startsWith('data:')))];
+  if(reg.active)reg.active.postMessage({type:'photos',small:photos.map(thumb),all:[...photos,...photos.map(thumb)]});
+ }).catch(()=>{});
+});
 </script>
 </body>
 </html>
