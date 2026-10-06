@@ -196,7 +196,13 @@ dialog{border:0;padding:0;margin:auto;background:var(--bg);color:var(--ink);widt
 dialog::backdrop{background:var(--backdrop);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 #cook-content{height:100%}
 .cook{height:100%;display:flex;flex-direction:column}
-.cook-top{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px 8px}
+.cook-top{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px}
+/* Schließen-Knopf in Kochmodus und Formular: runder, gefüllter Knopf mit kräftigem Kreuz, bündig mit dem Inhalt */
+.cook-top .icon-btn,.ed-top .icon-btn{position:relative;width:40px;height:40px;background:var(--tile);color:var(--ink);transition:background-color .2s ease,transform .15s ease}
+.cook-top .icon-btn::after,.ed-top .icon-btn::after{content:"";position:absolute;inset:-4px}
+.cook-top .icon-btn svg,.ed-top .icon-btn svg{width:17px;height:17px;stroke-width:2.6}
+.cook-top .icon-btn:active,.ed-top .icon-btn:active{transform:scale(.94)}
+@media(hover:hover){.cook-top .icon-btn:hover,.ed-top .icon-btn:hover{background:var(--line)}}
 .cook-title{font-size:17px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cook-count{font-size:17px;font-weight:600;color:var(--accent-text);font-variant-numeric:tabular-nums}
 .cook-prog{height:3px;background:var(--line)}
@@ -227,7 +233,7 @@ body:not(.can-edit) .edit-only{display:none!important}
 .tabs .add-tab{flex:0 0 64px;opacity:1}
 .add-tab i{width:48px;height:48px;box-shadow:0 4px 14px #0000ff59;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center}
 .ed{height:100%;display:flex;flex-direction:column}
-.ed-top{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 8px 10px;border-bottom:1px solid var(--line)}
+.ed-top{display:grid;grid-template-columns:40px minmax(0,1fr) 40px;align-items:center;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px;border-bottom:1px solid var(--line)}
 .ed-top h2{text-align:center;font-size:17px}
 .ed-body{flex:1;overflow:auto;padding:18px 20px 24px;display:flex;flex-direction:column;gap:16px}
 .fld{display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -274,8 +280,8 @@ body:not(.can-edit) .edit-only{display:none!important}
   .card h3{font-size:19px}
   .card-text{padding:12px 8px 10px}
   dialog{width:min(560px,calc(100% - 48px));height:min(720px,calc(100% - 48px));border-radius:28px}
-  .cook-top{padding:14px 20px 12px 12px}
-  .ed-top{padding:12px}
+  .cook-top{padding:14px 20px 12px 16px}
+  .ed-top{padding:12px 16px}
   .ed-foot{padding:12px 20px 16px}
 }
 @media(min-width:900px){
