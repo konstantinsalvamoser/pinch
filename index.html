@@ -25,21 +25,21 @@
 /* Layout: App-artig. Start = Frage, Suche, Kategorie-Kacheln, Foto-Karten im Raster, Tab-Leiste unten.
    Rezept = Bild-Kopf, darüberliegendes Blatt mit Zutaten und Schritten, fixierter Kochmodus-Button. */
 :root{
-  --bg:#ffffff;--tile:#f5f5f7;--ink:#1d1d1f;--muted:#6e6e73;--line:#e8e8ed;--line-strong:#d2d2d7;
-  --accent:#0000ff;--accent-text:#0000ff;--on-accent:#ffffff;--tint:#e5e5ff;
+  --bg:#eceeff;--tile:#ffffff;--ink:#1d1d1f;--muted:#62626a;--line:#dcdff5;--line-strong:#c2c6e8;   /* Grund zart blau, Flächen darauf weiß */
+  --accent:#0000ff;--accent-text:#0000ff;--on-accent:#ffffff;--tint:#d9dbff;
   --accent2:#c8ff00;--on-accent2:#000000;   /* zweite Farbe: nur für Favoriten und laufende Timer, immer als Fläche mit schwarzem Inhalt */
   --bar:#ffffff3d;--glass:blur(9px) saturate(180%) brightness(1.06);--glass-edge:#ffffffb3;--glass-shine:#ffffffd9;--glass-shadow:#1c1b1f24;--glass-pill:#1c1b1f12;--glass-solid:#ffffffe6;--float:#ffffff;--float-ink:#1c1b1f;--shadow:#1c1b1f14;--backdrop:#1c1b1f8c;--danger:#c4332b;
   --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Inter','Helvetica Neue',Arial,sans-serif;
   --gutter:clamp(16px,4vw,40px);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#000000;--tile:#1c1c1e;--ink:#f5f5f7;--muted:#a1a1a6;--line:#2c2c2e;--line-strong:#48484a;
-  --accent:#0000ff;--accent-text:#8c8cff;--on-accent:#ffffff;--tint:#0d0d40;
-  --bar:#2c2c2e3d;--glass:blur(9px) saturate(180%) brightness(.8);--glass-edge:#ffffff26;--glass-shine:#ffffff29;--glass-shadow:#00000099;--glass-pill:#ffffff1f;--glass-solid:#1c1c1ee6;--float:#1c1c1e;--float-ink:#f5f5f7;--shadow:#00000080;--backdrop:#000000b3;--danger:#ff6961;color-scheme:dark}}
+  --bg:#03031a;--tile:#101038;--ink:#f5f5f7;--muted:#a6a6b8;--line:#1e1e4d;--line-strong:#34346e;
+  --accent:#0000ff;--accent-text:#8c8cff;--on-accent:#ffffff;--tint:#1c1c66;
+  --bar:#2c2c2e3d;--glass:blur(9px) saturate(180%) brightness(.8);--glass-edge:#ffffff26;--glass-shine:#ffffff29;--glass-shadow:#00000099;--glass-pill:#ffffff1f;--glass-solid:#101038e6;--float:#16164a;--float-ink:#f5f5f7;--shadow:#00000080;--backdrop:#000000b3;--danger:#ff6961;color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#000000;--tile:#1c1c1e;--ink:#f5f5f7;--muted:#a1a1a6;--line:#2c2c2e;--line-strong:#48484a;
-  --accent:#0000ff;--accent-text:#8c8cff;--on-accent:#ffffff;--tint:#0d0d40;
-  --bar:#2c2c2e3d;--glass:blur(9px) saturate(180%) brightness(.8);--glass-edge:#ffffff26;--glass-shine:#ffffff29;--glass-shadow:#00000099;--glass-pill:#ffffff1f;--glass-solid:#1c1c1ee6;--float:#1c1c1e;--float-ink:#f5f5f7;--shadow:#00000080;--backdrop:#000000b3;--danger:#ff6961;color-scheme:dark}
+  --bg:#03031a;--tile:#101038;--ink:#f5f5f7;--muted:#a6a6b8;--line:#1e1e4d;--line-strong:#34346e;
+  --accent:#0000ff;--accent-text:#8c8cff;--on-accent:#ffffff;--tint:#1c1c66;
+  --bar:#2c2c2e3d;--glass:blur(9px) saturate(180%) brightness(.8);--glass-edge:#ffffff26;--glass-shine:#ffffff29;--glass-shadow:#00000099;--glass-pill:#ffffff1f;--glass-solid:#101038e6;--float:#16164a;--float-ink:#f5f5f7;--shadow:#00000080;--backdrop:#000000b3;--danger:#ff6961;color-scheme:dark}
 
 *{box-sizing:border-box}
 ::selection{background:var(--accent2);color:var(--on-accent2)}
@@ -82,12 +82,12 @@ h2{font-weight:600;font-size:21px;line-height:1.2;letter-spacing:-.022em;margin:
 .nav-lang{position:relative;display:flex;align-items:center;gap:2px;height:34px;padding:3px;border-radius:999px;background:var(--glass-pill);font-size:12.5px;font-weight:600;letter-spacing:.02em;flex:none}
 .nav-lang::after{content:"";position:absolute;inset:-5px}
 .nav-lang span{display:grid;place-items:center;min-width:31px;height:28px;border-radius:999px;color:var(--muted);transition:background-color .2s ease,color .2s ease}
-.nav-lang span.on{background:var(--bg);color:var(--ink);box-shadow:0 1px 3px var(--shadow)}
+.nav-lang span.on{background:var(--accent);color:var(--on-accent)}
 body.on-detail .nav-lang{display:none}
 .nav-up{display:none}
 .nav.scrolled .nav-up{display:grid}
 .nav-link{display:none;align-items:center;min-height:36px;padding:0 12px;border-radius:999px;font-size:14px;color:var(--muted)}
-.nav-link[aria-current="page"]{color:var(--ink);font-weight:600}
+.nav-link[aria-current="page"]{color:var(--accent-text);font-weight:600}
 .nav-pill{display:none;align-items:center;gap:6px;min-height:34px;margin-left:6px;padding:0 16px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:14px;font-weight:600;white-space:nowrap}
 body.on-detail .nav-brand,body.on-detail .nav-link,body.on-detail .nav-new{display:none}
 body.on-detail .nav-back{display:inline-flex}
@@ -106,8 +106,9 @@ body.on-detail main{padding-top:0;padding-bottom:0}
 /* Start */
 .sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .home{padding-top:12px}
-.search{display:flex;align-items:center;gap:10px;height:54px;padding:0 6px 0 18px;max-width:560px;background:var(--bg);border:1px solid var(--line);border-radius:999px;box-shadow:0 6px 20px var(--shadow);color:var(--muted)}
+.search{display:flex;align-items:center;gap:10px;height:54px;padding:0 6px 0 18px;max-width:560px;background:var(--tile);border:1px solid var(--line);border-radius:999px;box-shadow:0 6px 20px var(--shadow);color:var(--muted)}
 .search:focus-within{border-color:var(--accent)}
+.search>svg{color:var(--accent-text)}
 .search input{flex:1;min-width:0;height:100%;border:0;background:none;outline:none;font:inherit;font-size:15px;color:var(--ink)}
 .search input::placeholder{color:var(--muted)}
 .search input::-webkit-search-cancel-button{display:none}
@@ -128,16 +129,17 @@ body.on-detail main{padding-top:0;padding-bottom:0}
 .chip::after{content:"";position:absolute;inset:-4px 0}
 .chip svg{flex:none;color:var(--muted);transition:color .2s ease}
 .chip:active{transform:scale(.96)}
-.chip[aria-pressed="true"]{background:var(--tint);color:var(--accent-text);font-weight:600}
-.chip[aria-pressed="true"] svg{color:var(--accent-text)}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:600}
+.chip[aria-pressed="true"] svg{color:var(--on-accent)}
 @media(hover:hover){.chip:not([aria-pressed="true"]):hover{background:var(--line)}}
 /* Küchen-Label im Foto der Rezeptkarte, unten links */
 .badge.kitchen{top:auto;bottom:8px;display:inline-flex;align-items:center;gap:5px;max-width:calc(100% - 16px);padding:4px 10px 4px 7px}
+.badge.kitchen{background:var(--float);color:var(--accent-text)}
 .badge.kitchen svg{flex:none}
 .badge.kitchen span{overflow:hidden;text-overflow:ellipsis}
 .badge.kitchen.has-short .k-full{display:none}
 .cat{position:relative;flex:none;min-height:44px;font-size:23px;font-weight:600;line-height:1.2;letter-spacing:-.028em;white-space:nowrap;color:var(--muted);opacity:.5;transition:color .2s ease,opacity .2s ease}
-.cat[aria-pressed="true"]{color:var(--ink);font-weight:700;opacity:1}
+.cat[aria-pressed="true"]{color:var(--accent-text);font-weight:700;opacity:1}
 @media(hover:hover){.cat:not([aria-pressed="true"]):hover{opacity:.85}}
 
 .grid{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -146,7 +148,7 @@ body.on-detail main{padding-top:0;padding-bottom:0}
 .card-link{display:flex;flex-direction:column;height:100%;padding:8px;border-radius:24px}
 .media{position:relative;aspect-ratio:1/1;border-radius:18px;overflow:hidden;background:var(--tint);color:var(--accent-text);display:grid;place-items:center}
 .media img{display:block;width:100%;height:100%;object-fit:cover}
-.badge{position:absolute;left:8px;top:8px;background:var(--float);color:var(--float-ink);font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.badge{position:absolute;left:8px;top:8px;background:var(--accent);color:var(--on-accent);font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .card-text{display:flex;flex-direction:column;flex:1;min-width:0;padding:12px 8px 10px}
 .card h3{font-size:17px;font-weight:600;line-height:1.2;letter-spacing:-.022em;margin:2px 0 6px;hyphens:auto;overflow-wrap:anywhere;text-wrap:pretty}
 .card-meta{display:flex;flex-wrap:wrap;gap:0 12px;margin:auto 0 0;font-size:13px;font-weight:400;color:var(--muted)}
@@ -251,7 +253,7 @@ body:not(.can-edit) .edit-only{display:none!important}
 .fld{display:flex;flex-direction:column;gap:6px;min-width:0}
 .fld>span{font-size:13px;font-weight:600}
 .fld small{font-size:12.5px;color:var(--muted)}
-.fld input:not([type=file]),.fld select,.fld textarea{width:100%;min-height:50px;padding:13px 14px;font:inherit;font-size:16px;letter-spacing:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:14px}
+.fld input:not([type=file]),.fld select,.fld textarea{width:100%;min-height:50px;padding:13px 14px;font:inherit;font-size:16px;letter-spacing:inherit;color:var(--ink);background:var(--tile);border:1px solid var(--line-strong);border-radius:14px}
 .fld textarea{resize:vertical;line-height:1.45}
 .fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--tint)}
 .fld-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
@@ -268,10 +270,10 @@ body:not(.can-edit) .edit-only{display:none!important}
 .import{display:flex;flex-direction:column;gap:10px;padding:16px;background:var(--tint);border-radius:18px}
 .imp-title{font-size:15px;font-weight:600}
 .import small{font-size:12.5px;color:var(--muted)}
-.import textarea{width:100%;min-height:76px;padding:12px 14px;font:inherit;font-size:16px;letter-spacing:inherit;line-height:1.45;color:var(--ink);background:var(--bg);border:1px solid var(--line-strong);border-radius:14px;resize:vertical}
+.import textarea{width:100%;min-height:76px;padding:12px 14px;font:inherit;font-size:16px;letter-spacing:inherit;line-height:1.45;color:var(--ink);background:var(--tile);border:1px solid var(--line-strong);border-radius:14px;resize:vertical}
 .import textarea:focus{outline:none;border-color:var(--accent)}
 .imp-row{display:flex;flex-wrap:wrap;gap:8px}
-.import .btn.ghost{background:var(--bg)}
+.import .btn.ghost{background:var(--tile)}
 .import p{margin:0;font-size:13.5px}
 .import p:empty{display:none}
 .import p.err{color:var(--danger)}
@@ -338,9 +340,9 @@ body:not(.can-edit) .edit-only{display:none!important}
 .search-row{display:flex;align-items:center;gap:10px;max-width:560px}
 .search-row .search{flex:1;min-width:0;max-width:none}
 .filter{position:relative;flex:none}
-.filter-btn{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line);box-shadow:0 6px 20px var(--shadow);color:var(--ink);transition:background-color .2s ease,color .2s ease,border-color .2s ease,transform .15s ease}
+.filter-btn{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:var(--tile);border:1px solid var(--line);box-shadow:0 6px 20px var(--shadow);color:var(--accent-text);transition:background-color .2s ease,color .2s ease,border-color .2s ease,transform .15s ease}
 .filter-btn:active{transform:scale(.94)}
-.filter-btn[aria-expanded="true"]{background:var(--tile)}
+.filter-btn[aria-expanded="true"]{background:var(--tint)}
 .filter-btn.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 6px 20px #0000ff40}
 .menu{position:absolute;top:calc(100% + 10px);right:0;z-index:28;width:272px;max-width:calc(100vw - 2*var(--gutter));padding:6px;border-radius:24px;background:var(--float);background:color-mix(in srgb,var(--float) 95%,transparent);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border:1px solid var(--line);box-shadow:0 18px 50px var(--glass-shadow),0 2px 8px var(--shadow);transform-origin:top right;animation:menu-in .2s cubic-bezier(.2,.9,.3,1.15)}
 @keyframes menu-in{from{opacity:0;transform:scale(.86)}}
@@ -357,14 +359,16 @@ body:not(.can-edit) .edit-only{display:none!important}
 @media(min-width:700px){.search-row{max-width:none}}
 @media(prefers-reduced-motion:reduce){.menu{animation:none}}
 
-/* Quelle am Ende des Rezepts; Teilen und Drucken stehen oben im Kopf, ab 900 px neben dem Kochmodus-Knopf */
+/* Quelle am Ende des Rezepts; Teilen, Drucken und Einkaufsliste stehen oben im Kopf als drei gleich breite Flächen, ab 760 px unter dem Kochmodus-Knopf */
 .src{font-size:14px;color:var(--muted);margin:16px 0 0;max-width:62ch}
 .src a{color:var(--accent-text);font-weight:500;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
-.d-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:18px}
-.d-row .btn.small{gap:7px;padding:0 17px 0 13px;font-weight:500}
+.d-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:18px}
+.d-row .btn.small{flex-direction:column;gap:5px;min-height:64px;padding:8px 6px;border-radius:20px;font-size:13px;font-weight:500;letter-spacing:-.005em;line-height:1.2;white-space:normal;text-align:center}
+.d-row .btn.small svg{width:21px;height:21px}
+.d-cook{grid-column:1/-1}
 @media(min-width:760px){
-  .d-row{gap:10px;margin-top:22px}
-  .d-row .btn.small{min-height:54px;padding:0 22px 0 18px;font-size:16px}
+  .d-row{gap:10px;margin-top:22px;max-width:460px}
+  .d-row .btn.small{min-height:68px;font-size:13.5px}
 }
 
 /* Kurzer Hinweis am unteren Rand, z. B. "Link kopiert" */
@@ -510,9 +514,7 @@ html.splashing{background:#0000ff}
 .toast-btn{font-weight:700;text-decoration:underline;text-underline-offset:3px;color:inherit}
 
 /* Einkaufsliste: Knopf unter den Zutaten und eigene Ansicht */
-.shop-add{width:100%;margin-top:16px;gap:8px;font-weight:500}
-.shop-add[aria-pressed="true"]{background:var(--tint);color:var(--accent-text);font-weight:600}
-@media(min-width:760px){.ings .shop-add{background:var(--bg)}.ings .shop-add[aria-pressed="true"]{background:var(--tint)}}
+.d-row .shop-add[aria-pressed="true"]{background:var(--tint);color:var(--accent-text);font-weight:600}
 .shop{padding-top:12px}
 .shop-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .shop-head h1{font-size:clamp(28px,5vw,40px);margin:0}
@@ -539,9 +541,7 @@ html.splashing{background:#0000ff}
 @media(min-width:760px) and (max-width:899px){
   .detail{grid-template-columns:minmax(260px,310px) minmax(0,1fr);column-gap:32px;row-gap:28px}
   .ings{padding:20px}
-  .d-row .btn.small{min-height:50px;padding:0 18px 0 14px}
-  .d-cook{flex:1 1 100%;min-height:50px;padding:0 20px;font-size:16px}
-  .d-row .btn.small{flex:1 1 0}
+  .d-cook{min-height:50px;padding:0 20px;font-size:16px}
 }
 </style>
 </head>
@@ -553,6 +553,9 @@ let recipes=JSON.parse(document.getElementById('recipes-data').textContent);
 const PAGE_HEAD="<title>Pinch</title>\n<meta name=\"description\" content=\"Pinch – Konstantins Rezepte. Suchen, Portionen anpassen, Schritt für Schritt kochen.\">\n<meta name=\"apple-mobile-web-app-title\" content=\"Pinch\">\n<link rel=\"apple-touch-icon\" href=\"icon-180.png\">\n<link rel=\"icon\" type=\"image/png\" sizes=\"192x192\" href=\"icon-192.png\">\n<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap\">";
 const SHELL="<header class=\"nav glass\" id=\"nav\"><div class=\"wrap nav-in\">\n  <a class=\"nav-brand\" href=\"#\" data-go=\"\" aria-label=\"Pinch – zur Rezeptübersicht\" data-i18n-label=\"home\">\n    <svg viewBox=\"0 0 40 40\" width=\"32\" height=\"32\" fill=\"none\" aria-hidden=\"true\">\n      <g transform=\"rotate(-135 23 16)\" stroke=\"currentColor\" stroke-width=\"2.8\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M17 12h12l1.4 12.5a3 3 0 0 1-3 3.5h-8.8a3 3 0 0 1-3-3.5z\"/><path d=\"M17 12a6 6 0 0 1 12 0\"/></g>\n      <circle cx=\"11\" cy=\"29\" r=\"2.2\" fill=\"var(--accent)\"/><circle cx=\"16.5\" cy=\"33.5\" r=\"2\" fill=\"var(--accent)\"/><circle cx=\"7.5\" cy=\"35\" r=\"1.7\" fill=\"var(--accent)\"/>\n    </svg>\n    <span>pinch</span>\n  </a>\n  <a class=\"nav-back\" href=\"#\" data-go=\"\" aria-label=\"Zurück zur Übersicht\" data-i18n-label=\"backHome\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m14.5 5.5-6.5 6.5 6.5 6.5\"/></svg><span data-i18n=\"recipesTitle\">Rezepte</span></a>\n  <button class=\"nav-title\" id=\"nav-title\" tabindex=\"-1\" aria-hidden=\"true\"></button>\n  <div class=\"nav-right\">\n    <button class=\"nav-link\" data-tab=\"home\" data-i18n=\"recipesTitle\">Rezepte</button>\n    <button class=\"nav-link\" data-tab=\"fav\" data-i18n=\"favorites\">Favoriten</button>\n    <button class=\"nav-link\" data-tab=\"shop\"><span data-i18n=\"shopping\">Einkaufsliste</span><i class=\"tab-n\" hidden></i></button>\n    <button class=\"nav-lang\" id=\"nav-lang\" data-i18n-label=\"langSwitch\"><span data-l=\"de\">DE</span><span data-l=\"en\">EN</span></button>\n    <button class=\"nav-icon nav-up\" id=\"nav-up\" aria-label=\"Nach oben springen\" data-i18n-label=\"up\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 19V5m-6 6 6-6 6 6\"/></svg></button>\n    <button class=\"nav-icon nav-edit edit-only\" id=\"nav-edit\" aria-label=\"Rezept bearbeiten\" data-i18n-label=\"edit\"><svg viewBox=\"0 0 24 24\" width=\"19\" height=\"19\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 20h4L19 9l-4-4L4 16z\"/><path d=\"m13.5 6.5 4 4\"/></svg></button>\n    <button class=\"nav-icon nav-fav\" id=\"nav-fav\" aria-label=\"Als Favorit speichern\" aria-pressed=\"false\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg></button>\n    <button class=\"nav-pill nav-cook\" data-cook data-i18n=\"cook\">Kochmodus</button>\n    <button class=\"nav-pill nav-new edit-only\" data-new><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg><span data-i18n=\"newRecipe\">Neues Rezept</span></button>\n  </div>\n</div></header>\n<main id=\"app\" lang=\"de\"></main>\n<footer class=\"wrap\"><div class=\"foot\"><span data-i18n=\"foot\">Pinch · Konstantins Rezepte</span><span id=\"foot-count\"></span></div></footer>\n<nav class=\"tabs\" aria-label=\"Bereiche\" data-i18n-label=\"sections\">\n  <button data-tab=\"home\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 11.2 12 4l8 7.2V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z\"/></svg><span data-i18n=\"recipesTitle\">Rezepte</span></button>\n  <button data-tab=\"fav\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg><span data-i18n=\"favorites\">Favoriten</span></button>\n  <button data-tab=\"shop\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4.5 9.5h15l-1.4 8.8a2 2 0 0 1-2 1.7H7.9a2 2 0 0 1-2-1.7z\"/><path d=\"M8.5 9.5 12 4l3.5 5.5\"/></svg><span data-i18n=\"shopTab\">Einkauf</span><i class=\"tab-n\" hidden></i></button>\n  <button class=\"add-tab edit-only\" data-new aria-label=\"Neues Rezept\" data-i18n-label=\"newRecipe\"><i><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></i></button>\n</nav>\n<div class=\"timer-dock\" id=\"timer-dock\"></div>\n<div class=\"toast\" id=\"toast\" role=\"status\" hidden></div>\n<dialog id=\"cooking\" aria-label=\"Kochmodus\" data-i18n-label=\"cook\"><div id=\"cook-content\"></div></dialog>\n<dialog id=\"editor\" aria-labelledby=\"ed-title\"><form id=\"ed-form\" class=\"ed\" novalidate>\n  <div class=\"ed-top\"><button type=\"button\" class=\"icon-btn\" id=\"ed-close\" aria-label=\"Schließen\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M6 6l12 12M18 6 6 18\"/></svg></button><h2 id=\"ed-title\">Neues Rezept</h2><span></span></div>\n  <div class=\"ed-body\">\n    <div class=\"import\" id=\"ed-import\" hidden>\n      <span class=\"imp-title\">Automatisch erkennen</span>\n      <small>Wähle Screenshots, Fotos oder ein PDF des Rezepts, oder füge den Rezepttext ein. Claude füllt das Formular aus; du prüfst und speicherst. Bei einem Link: Website als PDF sichern oder Screenshots machen.</small>\n      <div class=\"imp-row\"><label class=\"btn ghost small\" id=\"imp-shot-label\">Bild oder PDF wählen<input id=\"imp-shot\" type=\"file\" accept=\"image/*,application/pdf,.pdf\" multiple class=\"sr\"></label></div>\n      <textarea id=\"imp-text\" rows=\"3\" placeholder=\"Rezepttext hier einfügen\" aria-label=\"Rezepttext zum Erkennen\"></textarea>\n      <div class=\"imp-row\"><button type=\"button\" class=\"btn ghost small\" id=\"imp-run\">Text erkennen</button><button type=\"button\" class=\"btn ghost small\" id=\"imp-stop\" hidden>Abbrechen</button></div>\n      <p id=\"imp-status\" role=\"status\"></p>\n    </div>\n    <label class=\"fld\"><span>Name</span><input id=\"f-name\" maxlength=\"80\" autocomplete=\"off\"></label>\n    <div class=\"fld-row\">\n      <label class=\"fld\"><span>Kategorie</span><select id=\"f-category\"></select></label>\n      <label class=\"fld\"><span>Küche</span><select id=\"f-cuisine\"></select></label>\n    </div>\n    <div class=\"fld-row three\">\n      <label class=\"fld\"><span>Portionen</span><input id=\"f-portions\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"100\"></label>\n      <label class=\"fld\"><span>Gesamt (Min.)</span><input id=\"f-time\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"14400\" placeholder=\"z. B. 90\"></label>\n      <label class=\"fld\"><span>Aktiv (Min.)</span><input id=\"f-active\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"14400\" placeholder=\"z. B. 30\"></label>\n    </div>\n    <p class=\"fld-note\">Gesamt zählt Warte-, Geh-, Kühl- und Backzeiten mit. Aktiv ist die reine Arbeitszeit; leer lassen, wenn beides gleich ist.</p>\n    <label class=\"fld\"><span>Kurzbeschreibung</span><input id=\"f-tag\" placeholder=\"z. B. Knusprig · schnell\" maxlength=\"80\" autocomplete=\"off\"></label>\n    <label class=\"fld\"><span>Quelle</span><small>Link zum Originalrezept oder Video, falls es einen gibt.</small><input id=\"f-source\" type=\"url\" inputmode=\"url\" placeholder=\"https://…\" maxlength=\"300\" autocomplete=\"off\"></label>\n    <div class=\"fld\"><span>Merkmale</span><small>„Schnell“ vergibt die Seite selbst, wenn die Gesamtzeit höchstens 30 Minuten beträgt.</small><div class=\"checks\"><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-vegetarisch\"><span>Vegetarisch</span></label><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-gaeste\"><span>Für Gäste</span></label><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-vorbereiten\"><span>Gut vorzubereiten</span></label></div></div>\n    <div class=\"fld\"><span>Foto des Gerichts</span><small>JPG oder PNG. Aus einem PDF wird das Foto automatisch übernommen.</small><div class=\"photo-row\"><img id=\"f-photo-preview\" alt=\"\" hidden><label class=\"btn ghost small\">Foto wählen<input id=\"f-photo\" type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr\"></label><button type=\"button\" class=\"btn ghost small\" id=\"f-photo-remove\" hidden>Entfernen</button></div><p id=\"f-photo-status\" class=\"fld-note\" role=\"status\"></p></div>\n    <label class=\"fld\"><span>Zutaten</span><small>Eine pro Zeile, Menge zuerst: 200 g Mehl · 2 EL Olivenöl · Salz</small><textarea id=\"f-ingredients\" rows=\"7\"></textarea></label>\n    <div id=\"f-parse\" class=\"parse\" aria-live=\"polite\"></div>\n    <label class=\"fld\"><span>Zubereitung</span><small>Ein Schritt pro Zeile.</small><textarea id=\"f-steps\" rows=\"7\"></textarea></label>\n    <label class=\"fld\"><span>Notiz</span><textarea id=\"f-note\" rows=\"2\"></textarea></label>\n    <button type=\"button\" class=\"link-danger\" id=\"ed-delete\" hidden>Rezept löschen</button>\n  </div>\n  <div class=\"ed-foot\"><p id=\"ed-status\" role=\"status\"></p><button class=\"btn primary\" id=\"ed-save\" type=\"submit\">Speichern</button></div>\n</form></dialog>";
 document.body.insertAdjacentHTML('beforeend',SHELL);
+
+// Browserleiste in der Farbe des Seitengrunds; die Website gibt im Kopf Weiß bzw. Schwarz vor (sync.py)
+document.querySelectorAll('meta[name="theme-color"]').forEach(m=>{m.content=/dark/.test(m.media)?'#03031a':'#eceeff';});
 
 // ---------- Startbild: blaue Fläche mit Logo, nur auf der öffentlichen Website (zum Testen: ?splash) ----------
 // Bleibt mindestens gut eine Sekunde und bis die Seite geladen ist, höchstens drei Sekunden. In der Claude-Ansicht
@@ -610,7 +613,7 @@ const STR={
   timerStart:'Timer starten: ',timerStop:'Timer beenden',timerDone:'Fertig',timerOpen:'Zum Schritt springen',timers:'Laufende Timer',stepN:'Schritt ',
   speak:'Schritte vorlesen',tapHint:'Tippe rechts für weiter, links für zurück.',jumpStep:'Zu Schritt ',
   mine:'Für mich',cookedBtn:'Heute gekocht',cookedNone:'Noch nicht gekocht',cookedN:'× gekocht',cookedLast:'zuletzt am ',cookedToast:'Als gekocht vermerkt',undo:'Rückgängig',myNote:'Meine Notiz',myNotePh:'Was du beim nächsten Mal anders machst',mineHint:'Vermerk und Notiz sind nur auf diesem Gerät gespeichert.',
-  shopping:'Einkaufsliste',shopTab:'Einkauf',shopAdd:'Auf die Einkaufsliste',shopOn:'Auf der Einkaufsliste',shopChange:'Menge auf der Einkaufsliste anpassen',shopView:'Ansehen',shopEmpty:'Die Einkaufsliste ist leer',shopEmptyText:'Öffne ein Rezept und tippe unter den Zutaten auf „Auf die Einkaufsliste“.',showRecipes:'Rezepte ansehen',shopOpen:' offen',shopClear:'Leeren',shopClearSure:'Wirklich leeren?',shopCopied:'Liste kopiert',shopNoCopy:'Kopieren geht in dieser Ansicht nicht.',shopRemove:'Von der Liste nehmen',shopDeviceNote:'Die Liste ist nur auf diesem Gerät gespeichert. Geteilt wird, was noch nicht abgehakt ist.'},
+  shopping:'Einkaufsliste',shopTab:'Einkauf',shopAdd:'Auf die Einkaufsliste',shopOn:'Auf der Einkaufsliste',shopChange:'Menge auf der Einkaufsliste anpassen',shopAddShort:'Einkaufsliste',shopOnShort:'Auf der Liste',shopChangeShort:'Menge anpassen',shopView:'Ansehen',shopEmpty:'Die Einkaufsliste ist leer',shopEmptyText:'Öffne ein Rezept und tippe oben auf „Einkaufsliste“.',showRecipes:'Rezepte ansehen',shopOpen:' offen',shopClear:'Leeren',shopClearSure:'Wirklich leeren?',shopCopied:'Liste kopiert',shopNoCopy:'Kopieren geht in dieser Ansicht nicht.',shopRemove:'Von der Liste nehmen',shopDeviceNote:'Die Liste ist nur auf diesem Gerät gespeichert. Geteilt wird, was noch nicht abgehakt ist.'},
  en:{recipes:['recipe','recipes'],days:['day','days'],servings:['serving','servings'],steps:['step','steps'],variations:'variations',approx:'approx. ',min:' min',hr:' h',
   favOn:'Remove from favorites',favOff:'Save as favorite',
   noFavs:'No favorites yet',noFavsText:'Tap the heart on a recipe and it will show up here.',emptyCat:'Nothing in ',emptyCatText:'As soon as a recipe is in this category, it will show up here.',nothing:'Nothing found',nothingText:'Try a different ingredient, category or cuisine.',addRecipe:'Add recipe',showAll:'Show all recipes',
@@ -624,7 +627,7 @@ const STR={
   timerStart:'Start timer: ',timerStop:'Stop timer',timerDone:'Done',timerOpen:'Jump to step',timers:'Running timers',stepN:'Step ',
   speak:'Read steps aloud',tapHint:'Tap right for next, left for back.',jumpStep:'Go to step ',
   mine:'For me',cookedBtn:'Cooked today',cookedNone:'Not cooked yet',cookedN:'× cooked',cookedLast:'last on ',cookedToast:'Marked as cooked',undo:'Undo',myNote:'My note',myNotePh:'What you would do differently next time',mineHint:'Your mark and note are only saved on this device.',
-  shopping:'Shopping list',shopTab:'Shopping',shopAdd:'Add to shopping list',shopOn:'On the shopping list',shopChange:'Update amount on the shopping list',shopView:'View',shopEmpty:'Your shopping list is empty',shopEmptyText:'Open a recipe and tap “Add to shopping list” below the ingredients.',showRecipes:'Browse recipes',shopOpen:' to get',shopClear:'Clear',shopClearSure:'Really clear?',shopCopied:'List copied',shopNoCopy:'Copying is not available in this view.',shopRemove:'Remove from list',shopDeviceNote:'The list is only saved on this device. Sharing sends whatever is not ticked off yet.'}
+  shopping:'Shopping list',shopTab:'Shopping',shopAdd:'Add to shopping list',shopOn:'On the shopping list',shopChange:'Update amount on the shopping list',shopAddShort:'Shopping list',shopOnShort:'On the list',shopChangeShort:'Update amount',shopView:'View',shopEmpty:'Your shopping list is empty',shopEmptyText:'Open a recipe and tap “Shopping list” at the top.',showRecipes:'Browse recipes',shopOpen:' to get',shopClear:'Clear',shopClearSure:'Really clear?',shopCopied:'List copied',shopNoCopy:'Copying is not available in this view.',shopRemove:'Remove from list',shopDeviceNote:'The list is only saved on this device. Sharing sends whatever is not ticked off yet.'}
 };
 let lang='de';
 try{const s=localStorage.getItem('pinch-lang');lang=s==='de'||s==='en'?s:(/^de\b/i.test(navigator.language||'de')?'de':'en');}catch{}
@@ -885,11 +888,11 @@ function detail(r,reset=true){
   +'</div>'
   +'<div class="sheet"><div class="d-info"><p class="eyebrow">'+esc(catName(r.category))+(r.cuisine?' · '+esc(cuisineName(r.cuisine)):'')+'</p><h1>'+esc(rName(r))+'</h1><div class="facts">'
   +(act?'<span>'+icon('clock',16)+esc(fmtTime(act)+tx('active'))+'</span><span>'+icon('hourglass',16)+esc(t+tx('total'))+'</span>':t?'<span>'+icon('clock',16)+esc(t)+'</span>':'')+'<span>'+icon('list',16)+nOf(v.steps.length,'steps')+'</span>'+(r.variants.length>1?'<span>'+icon('layers',16)+r.variants.length+' '+tx('variations')+'</span>':'')
-  +'</div><p class="d-tag">'+esc(rTag(r))+'</p>'+(marks.length?'<p class="d-traits">'+marks.map(m=>'<span class="trait">'+icon(TRAIT_ICON[m],14,2)+esc(traitName(m))+'</span>').join('')+'</p>':'')+'<div class="d-row"><button class="btn primary d-cook" data-cook>'+tx('startCook')+' '+icon('right',18)+'</button><button class="btn ghost small" data-share>'+icon('share',18)+tx('shareShort')+'</button><button class="btn ghost small" data-print>'+icon('printer',18)+tx('print')+'</button></div></div>'
+  +'</div><p class="d-tag">'+esc(rTag(r))+'</p>'+(marks.length?'<p class="d-traits">'+marks.map(m=>'<span class="trait">'+icon(TRAIT_ICON[m],14,2)+esc(traitName(m))+'</span>').join('')+'</p>':'')+'<div class="d-row"><button class="btn primary d-cook" data-cook>'+tx('startCook')+' '+icon('right',18)+'</button><button class="btn ghost small" data-share>'+icon('share',18)+tx('shareShort')+'</button><button class="btn ghost small" data-print>'+icon('printer',18)+tx('print')+'</button>'+shopButton(r)+'</div></div>'
   +'<div class="ings-col"><section class="ings"><div class="ings-head"><h2>'+tx('ingredients')+'</h2><div class="stepper" role="group" aria-label="'+tx('servingsLabel')+'"><button id="minus" aria-label="'+tx('less')+'" '+(portions<=1?'disabled':'')+'>−</button><input id="portions" type="number" inputmode="numeric" min="1" max="100" step="1" aria-label="'+tx('wanted')+'" value="'+portions+'"><button id="plus" aria-label="'+tx('more')+'" '+(portions>=100?'disabled':'')+'>+</button></div></div>'
   +(r.variants.length>1?'<div class="seg" role="group" aria-label="'+tx('chooseVariant')+'">'+r.variants.map((x,i)=>'<button data-variant="'+i+'" aria-pressed="'+(i===variantIndex)+'">'+esc(vText(r,i).name)+'</button>').join('')+'</div>':'')
   +'<p class="basis">'+nOf(portions,'servings')+' · '+tx('recipeFor')+(v.approx?tx('approx'):'')+v.portions+(exact?'':tx('scaled'))+'</p>'
-  +'<div id="ingredient-list">'+v.ingredients.map((i,n)=>'<label class="ing"><input type="checkbox" id="ingredient-'+n+'" data-ingredient="'+n+'"><span class="ing-name">'+ingredientName(vx.ingredients[n])+'</span><span class="amount">'+amount(i,v)+'</span></label>').join('')+'</div>'+shopButton(r)+'</section></div>'
+  +'<div id="ingredient-list">'+v.ingredients.map((i,n)=>'<label class="ing"><input type="checkbox" id="ingredient-'+n+'" data-ingredient="'+n+'"><span class="ing-name">'+ingredientName(vx.ingredients[n])+'</span><span class="amount">'+amount(i,v)+'</span></label>').join('')+'</div></section></div>'
   +'<section class="steps"><h2>'+tx('method')+'</h2><ol class="step-list">'+vx.steps.map((s,i)=>'<li class="step"><span class="step-n">'+(i+1)+'</span><p>'+esc(adjustStep(s,r,v))+'</p></li>').join('')+'</ol>'
   +(vx.note?'<div class="note">'+esc(vx.note)+'</div>':'')
   +(src?'<p class="src">'+tx('source')+': <a href="'+esc(src.href)+'" target="_blank" rel="noopener noreferrer">'+esc(src.host)+'</a></p>':'')
@@ -1166,7 +1169,7 @@ function shopLines(){
 }
 function shopButton(r){
  const it=shopItem(r,variantIndex),same=!!it&&it.p===portions;
- return '<button class="btn ghost small shop-add" data-shop-add aria-pressed="'+same+'">'+icon(same?'check':'basket',18,same?2.4:2)+tx(same?'shopOn':it?'shopChange':'shopAdd')+'</button>';
+ return '<button class="btn ghost small shop-add" data-shop-add aria-pressed="'+same+'" aria-label="'+tx(same?'shopOn':it?'shopChange':'shopAdd')+'">'+icon(same?'check':'basket',18,same?2.4:2)+tx(same?'shopOnShort':it?'shopChangeShort':'shopAddShort')+'</button>';
 }
 function shopping(){
  activeRecipe=null;updateNav();
