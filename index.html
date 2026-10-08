@@ -543,6 +543,37 @@ html.splashing{background:#0000ff}
   .ings{padding:20px}
   .d-cook{min-height:50px;padding:0 20px;font-size:16px}
 }
+
+/* Anmeldung auf der Website: füllt den Bildschirm, bis Name und Passwort passen */
+body.locked>.nav,body.locked>.tabs,body.locked>main,body.locked>footer,body.locked>.timer-dock{display:none}
+.login{position:fixed;inset:0;z-index:60;overflow:auto;display:grid;place-items:center;padding:calc(env(safe-area-inset-top,0px) + 24px) var(--gutter) calc(env(safe-area-inset-bottom,0px) + 24px);background:var(--bg)}
+.login-in{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:stretch;gap:12px;margin-bottom:8vh}
+.login-in svg{align-self:center;margin-bottom:4px}
+.login-in h1{margin:0;text-align:center;font-size:32px}
+.login-sub{margin:0 0 12px;text-align:center;font-size:15px;color:var(--muted);text-wrap:balance}
+.login-in input{width:100%;height:54px;padding:0 20px;border-radius:999px;border:1px solid var(--line-strong);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;letter-spacing:inherit}
+.login-in input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--tint)}
+.login-msg{margin:0;min-height:20px;text-align:center;font-size:14px;color:var(--danger)}
+.login-in .btn{width:100%}
+/* Zeile am Ende der Übersicht: angemeldet als, Abmelden, Zugänge */
+.acct{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 14px;margin:32px 0 0;font-size:13px;color:var(--muted)}
+.acct button{min-height:44px;font-weight:600;color:var(--accent-text)}
+@media print{.login,.acct{display:none!important}}
+/* Zugänge verwalten */
+.ac-user{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line)}
+.ac-user:last-child{border-bottom:1px solid var(--line)}
+.ac-name{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ac-user .btn.small{min-height:40px;padding:0 14px;font-size:14px;font-weight:500}
+.ac-user .btn[aria-pressed="true"]{background:var(--tint);color:var(--accent-text)}
+.ac-del{color:var(--danger)}
+.ac-form{display:flex;flex-direction:column;gap:14px}
+.ac-form h3{margin:8px 0 0;font-size:17px;font-weight:600;letter-spacing:-.02em}
+.ac-pw{display:flex;gap:8px}
+.ac-pw input{flex:1;min-width:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.ac-pw .btn{min-height:50px}
+.ac-form input[readonly]{color:var(--muted)}
+.ac-new pre{margin:0;padding:12px 14px;border-radius:14px;background:var(--bg);font:500 14px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;user-select:all;-webkit-user-select:all}
+.ac-new small{font-size:12.5px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -550,8 +581,12 @@ html.splashing{background:#0000ff}
 <script id="app-js">
 // ---------- Daten und Grundgerüst ----------
 let recipes=JSON.parse(document.getElementById('recipes-data').textContent);
+// Zugänge stehen nur in der Claude-Seite (Block access-data); das Schloss setzt nur die Website (sync.py), dort ist die Rezeptliste zunächst leer.
+let access=null;
+try{access=JSON.parse(document.getElementById('access-data').textContent);}catch{}
+const LOCK=window.PINCH_LOCK||null;
 const PAGE_HEAD="<title>Pinch</title>\n<meta name=\"description\" content=\"Pinch – Konstantins Rezepte. Suchen, Portionen anpassen, Schritt für Schritt kochen.\">\n<meta name=\"apple-mobile-web-app-title\" content=\"Pinch\">\n<link rel=\"apple-touch-icon\" href=\"icon-180.png\">\n<link rel=\"icon\" type=\"image/png\" sizes=\"192x192\" href=\"icon-192.png\">\n<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap\">";
-const SHELL="<header class=\"nav glass\" id=\"nav\"><div class=\"wrap nav-in\">\n  <a class=\"nav-brand\" href=\"#\" data-go=\"\" aria-label=\"Pinch – zur Rezeptübersicht\" data-i18n-label=\"home\">\n    <svg viewBox=\"0 0 40 40\" width=\"32\" height=\"32\" fill=\"none\" aria-hidden=\"true\">\n      <g transform=\"rotate(-135 23 16)\" stroke=\"currentColor\" stroke-width=\"2.8\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M17 12h12l1.4 12.5a3 3 0 0 1-3 3.5h-8.8a3 3 0 0 1-3-3.5z\"/><path d=\"M17 12a6 6 0 0 1 12 0\"/></g>\n      <circle cx=\"11\" cy=\"29\" r=\"2.2\" fill=\"var(--accent)\"/><circle cx=\"16.5\" cy=\"33.5\" r=\"2\" fill=\"var(--accent)\"/><circle cx=\"7.5\" cy=\"35\" r=\"1.7\" fill=\"var(--accent)\"/>\n    </svg>\n    <span>pinch</span>\n  </a>\n  <a class=\"nav-back\" href=\"#\" data-go=\"\" aria-label=\"Zurück zur Übersicht\" data-i18n-label=\"backHome\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m14.5 5.5-6.5 6.5 6.5 6.5\"/></svg><span data-i18n=\"recipesTitle\">Rezepte</span></a>\n  <button class=\"nav-title\" id=\"nav-title\" tabindex=\"-1\" aria-hidden=\"true\"></button>\n  <div class=\"nav-right\">\n    <button class=\"nav-link\" data-tab=\"home\" data-i18n=\"recipesTitle\">Rezepte</button>\n    <button class=\"nav-link\" data-tab=\"fav\" data-i18n=\"favorites\">Favoriten</button>\n    <button class=\"nav-link\" data-tab=\"shop\"><span data-i18n=\"shopping\">Einkaufsliste</span><i class=\"tab-n\" hidden></i></button>\n    <button class=\"nav-lang\" id=\"nav-lang\" data-i18n-label=\"langSwitch\"><span data-l=\"de\">DE</span><span data-l=\"en\">EN</span></button>\n    <button class=\"nav-icon nav-up\" id=\"nav-up\" aria-label=\"Nach oben springen\" data-i18n-label=\"up\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 19V5m-6 6 6-6 6 6\"/></svg></button>\n    <button class=\"nav-icon nav-edit edit-only\" id=\"nav-edit\" aria-label=\"Rezept bearbeiten\" data-i18n-label=\"edit\"><svg viewBox=\"0 0 24 24\" width=\"19\" height=\"19\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 20h4L19 9l-4-4L4 16z\"/><path d=\"m13.5 6.5 4 4\"/></svg></button>\n    <button class=\"nav-icon nav-fav\" id=\"nav-fav\" aria-label=\"Als Favorit speichern\" aria-pressed=\"false\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg></button>\n    <button class=\"nav-pill nav-cook\" data-cook data-i18n=\"cook\">Kochmodus</button>\n    <button class=\"nav-pill nav-new edit-only\" data-new><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg><span data-i18n=\"newRecipe\">Neues Rezept</span></button>\n  </div>\n</div></header>\n<main id=\"app\" lang=\"de\"></main>\n<footer class=\"wrap\"><div class=\"foot\"><span data-i18n=\"foot\">Pinch · Konstantins Rezepte</span><span id=\"foot-count\"></span></div></footer>\n<nav class=\"tabs\" aria-label=\"Bereiche\" data-i18n-label=\"sections\">\n  <button data-tab=\"home\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 11.2 12 4l8 7.2V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z\"/></svg><span data-i18n=\"recipesTitle\">Rezepte</span></button>\n  <button data-tab=\"fav\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg><span data-i18n=\"favorites\">Favoriten</span></button>\n  <button data-tab=\"shop\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4.5 9.5h15l-1.4 8.8a2 2 0 0 1-2 1.7H7.9a2 2 0 0 1-2-1.7z\"/><path d=\"M8.5 9.5 12 4l3.5 5.5\"/></svg><span data-i18n=\"shopTab\">Einkauf</span><i class=\"tab-n\" hidden></i></button>\n  <button class=\"add-tab edit-only\" data-new aria-label=\"Neues Rezept\" data-i18n-label=\"newRecipe\"><i><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></i></button>\n</nav>\n<div class=\"timer-dock\" id=\"timer-dock\"></div>\n<div class=\"toast\" id=\"toast\" role=\"status\" hidden></div>\n<dialog id=\"cooking\" aria-label=\"Kochmodus\" data-i18n-label=\"cook\"><div id=\"cook-content\"></div></dialog>\n<dialog id=\"editor\" aria-labelledby=\"ed-title\"><form id=\"ed-form\" class=\"ed\" novalidate>\n  <div class=\"ed-top\"><button type=\"button\" class=\"icon-btn\" id=\"ed-close\" aria-label=\"Schließen\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M6 6l12 12M18 6 6 18\"/></svg></button><h2 id=\"ed-title\">Neues Rezept</h2><span></span></div>\n  <div class=\"ed-body\">\n    <div class=\"import\" id=\"ed-import\" hidden>\n      <span class=\"imp-title\">Automatisch erkennen</span>\n      <small>Wähle Screenshots, Fotos oder ein PDF des Rezepts, oder füge den Rezepttext ein. Claude füllt das Formular aus; du prüfst und speicherst. Bei einem Link: Website als PDF sichern oder Screenshots machen.</small>\n      <div class=\"imp-row\"><label class=\"btn ghost small\" id=\"imp-shot-label\">Bild oder PDF wählen<input id=\"imp-shot\" type=\"file\" accept=\"image/*,application/pdf,.pdf\" multiple class=\"sr\"></label></div>\n      <textarea id=\"imp-text\" rows=\"3\" placeholder=\"Rezepttext hier einfügen\" aria-label=\"Rezepttext zum Erkennen\"></textarea>\n      <div class=\"imp-row\"><button type=\"button\" class=\"btn ghost small\" id=\"imp-run\">Text erkennen</button><button type=\"button\" class=\"btn ghost small\" id=\"imp-stop\" hidden>Abbrechen</button></div>\n      <p id=\"imp-status\" role=\"status\"></p>\n    </div>\n    <label class=\"fld\"><span>Name</span><input id=\"f-name\" maxlength=\"80\" autocomplete=\"off\"></label>\n    <div class=\"fld-row\">\n      <label class=\"fld\"><span>Kategorie</span><select id=\"f-category\"></select></label>\n      <label class=\"fld\"><span>Küche</span><select id=\"f-cuisine\"></select></label>\n    </div>\n    <div class=\"fld-row three\">\n      <label class=\"fld\"><span>Portionen</span><input id=\"f-portions\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"100\"></label>\n      <label class=\"fld\"><span>Gesamt (Min.)</span><input id=\"f-time\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"14400\" placeholder=\"z. B. 90\"></label>\n      <label class=\"fld\"><span>Aktiv (Min.)</span><input id=\"f-active\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"14400\" placeholder=\"z. B. 30\"></label>\n    </div>\n    <p class=\"fld-note\">Gesamt zählt Warte-, Geh-, Kühl- und Backzeiten mit. Aktiv ist die reine Arbeitszeit; leer lassen, wenn beides gleich ist.</p>\n    <label class=\"fld\"><span>Kurzbeschreibung</span><input id=\"f-tag\" placeholder=\"z. B. Knusprig · schnell\" maxlength=\"80\" autocomplete=\"off\"></label>\n    <label class=\"fld\"><span>Quelle</span><small>Link zum Originalrezept oder Video, falls es einen gibt.</small><input id=\"f-source\" type=\"url\" inputmode=\"url\" placeholder=\"https://…\" maxlength=\"300\" autocomplete=\"off\"></label>\n    <div class=\"fld\"><span>Merkmale</span><small>„Schnell“ vergibt die Seite selbst, wenn die Gesamtzeit höchstens 30 Minuten beträgt.</small><div class=\"checks\"><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-vegetarisch\"><span>Vegetarisch</span></label><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-gaeste\"><span>Für Gäste</span></label><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-vorbereiten\"><span>Gut vorzubereiten</span></label></div></div>\n    <div class=\"fld\"><span>Foto des Gerichts</span><small>JPG oder PNG. Aus einem PDF wird das Foto automatisch übernommen.</small><div class=\"photo-row\"><img id=\"f-photo-preview\" alt=\"\" hidden><label class=\"btn ghost small\">Foto wählen<input id=\"f-photo\" type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr\"></label><button type=\"button\" class=\"btn ghost small\" id=\"f-photo-remove\" hidden>Entfernen</button></div><p id=\"f-photo-status\" class=\"fld-note\" role=\"status\"></p></div>\n    <label class=\"fld\"><span>Zutaten</span><small>Eine pro Zeile, Menge zuerst: 200 g Mehl · 2 EL Olivenöl · Salz</small><textarea id=\"f-ingredients\" rows=\"7\"></textarea></label>\n    <div id=\"f-parse\" class=\"parse\" aria-live=\"polite\"></div>\n    <label class=\"fld\"><span>Zubereitung</span><small>Ein Schritt pro Zeile.</small><textarea id=\"f-steps\" rows=\"7\"></textarea></label>\n    <label class=\"fld\"><span>Notiz</span><textarea id=\"f-note\" rows=\"2\"></textarea></label>\n    <button type=\"button\" class=\"link-danger\" id=\"ed-delete\" hidden>Rezept löschen</button>\n  </div>\n  <div class=\"ed-foot\"><p id=\"ed-status\" role=\"status\"></p><button class=\"btn primary\" id=\"ed-save\" type=\"submit\">Speichern</button></div>\n</form></dialog>";
+const SHELL="<header class=\"nav glass\" id=\"nav\"><div class=\"wrap nav-in\">\n  <a class=\"nav-brand\" href=\"#\" data-go=\"\" aria-label=\"Pinch – zur Rezeptübersicht\" data-i18n-label=\"home\">\n    <svg viewBox=\"0 0 40 40\" width=\"32\" height=\"32\" fill=\"none\" aria-hidden=\"true\">\n      <g transform=\"rotate(-135 23 16)\" stroke=\"currentColor\" stroke-width=\"2.8\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M17 12h12l1.4 12.5a3 3 0 0 1-3 3.5h-8.8a3 3 0 0 1-3-3.5z\"/><path d=\"M17 12a6 6 0 0 1 12 0\"/></g>\n      <circle cx=\"11\" cy=\"29\" r=\"2.2\" fill=\"var(--accent)\"/><circle cx=\"16.5\" cy=\"33.5\" r=\"2\" fill=\"var(--accent)\"/><circle cx=\"7.5\" cy=\"35\" r=\"1.7\" fill=\"var(--accent)\"/>\n    </svg>\n    <span>pinch</span>\n  </a>\n  <a class=\"nav-back\" href=\"#\" data-go=\"\" aria-label=\"Zurück zur Übersicht\" data-i18n-label=\"backHome\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m14.5 5.5-6.5 6.5 6.5 6.5\"/></svg><span data-i18n=\"recipesTitle\">Rezepte</span></a>\n  <button class=\"nav-title\" id=\"nav-title\" tabindex=\"-1\" aria-hidden=\"true\"></button>\n  <div class=\"nav-right\">\n    <button class=\"nav-link\" data-tab=\"home\" data-i18n=\"recipesTitle\">Rezepte</button>\n    <button class=\"nav-link\" data-tab=\"fav\" data-i18n=\"favorites\">Favoriten</button>\n    <button class=\"nav-link\" data-tab=\"shop\"><span data-i18n=\"shopping\">Einkaufsliste</span><i class=\"tab-n\" hidden></i></button>\n    <button class=\"nav-lang\" id=\"nav-lang\" data-i18n-label=\"langSwitch\"><span data-l=\"de\">DE</span><span data-l=\"en\">EN</span></button>\n    <button class=\"nav-icon nav-up\" id=\"nav-up\" aria-label=\"Nach oben springen\" data-i18n-label=\"up\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 19V5m-6 6 6-6 6 6\"/></svg></button>\n    <button class=\"nav-icon nav-edit edit-only\" id=\"nav-edit\" aria-label=\"Rezept bearbeiten\" data-i18n-label=\"edit\"><svg viewBox=\"0 0 24 24\" width=\"19\" height=\"19\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 20h4L19 9l-4-4L4 16z\"/><path d=\"m13.5 6.5 4 4\"/></svg></button>\n    <button class=\"nav-icon nav-fav\" id=\"nav-fav\" aria-label=\"Als Favorit speichern\" aria-pressed=\"false\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg></button>\n    <button class=\"nav-pill nav-cook\" data-cook data-i18n=\"cook\">Kochmodus</button>\n    <button class=\"nav-pill nav-new edit-only\" data-new><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg><span data-i18n=\"newRecipe\">Neues Rezept</span></button>\n  </div>\n</div></header>\n<main id=\"app\" lang=\"de\"></main>\n<footer class=\"wrap\"><div class=\"foot\"><span data-i18n=\"foot\">Pinch · Konstantins Rezepte</span><span id=\"foot-count\"></span></div></footer>\n<nav class=\"tabs\" aria-label=\"Bereiche\" data-i18n-label=\"sections\">\n  <button data-tab=\"home\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 11.2 12 4l8 7.2V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z\"/></svg><span data-i18n=\"recipesTitle\">Rezepte</span></button>\n  <button data-tab=\"fav\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z\"/></svg><span data-i18n=\"favorites\">Favoriten</span></button>\n  <button data-tab=\"shop\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4.5 9.5h15l-1.4 8.8a2 2 0 0 1-2 1.7H7.9a2 2 0 0 1-2-1.7z\"/><path d=\"M8.5 9.5 12 4l3.5 5.5\"/></svg><span data-i18n=\"shopTab\">Einkauf</span><i class=\"tab-n\" hidden></i></button>\n  <button class=\"add-tab edit-only\" data-new aria-label=\"Neues Rezept\" data-i18n-label=\"newRecipe\"><i><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></i></button>\n</nav>\n<div class=\"login\" id=\"login\" hidden><form class=\"login-in\" id=\"login-form\" method=\"post\" action=\"#\">\n  <svg viewBox=\"0 0 40 40\" width=\"64\" height=\"64\" fill=\"none\" aria-hidden=\"true\"><g transform=\"rotate(-135 23 16)\" stroke=\"currentColor\" stroke-width=\"2.8\" stroke-linejoin=\"round\" stroke-linecap=\"round\"><path d=\"M17 12h12l1.4 12.5a3 3 0 0 1-3 3.5h-8.8a3 3 0 0 1-3-3.5z\"/><path d=\"M17 12a6 6 0 0 1 12 0\"/></g><circle cx=\"11\" cy=\"29\" r=\"2.2\" fill=\"var(--accent)\"/><circle cx=\"16.5\" cy=\"33.5\" r=\"2\" fill=\"var(--accent)\"/><circle cx=\"7.5\" cy=\"35\" r=\"1.7\" fill=\"var(--accent)\"/></svg>\n  <h1 data-i18n=\"loginTitle\">Anmelden</h1>\n  <p class=\"login-sub\" data-i18n=\"loginSub\">Konstantins Rezepte sind privat. Melde dich mit deinem Zugang an.</p>\n  <input id=\"login-name\" name=\"username\" autocomplete=\"username\" autocapitalize=\"none\" autocorrect=\"off\" spellcheck=\"false\" maxlength=\"40\" placeholder=\"Name\" aria-label=\"Name\" data-i18n-ph=\"loginName\" data-i18n-label=\"loginName\" required>\n  <input id=\"login-pass\" name=\"password\" type=\"password\" autocomplete=\"current-password\" maxlength=\"80\" placeholder=\"Passwort\" aria-label=\"Passwort\" data-i18n-ph=\"loginPass\" data-i18n-label=\"loginPass\" required>\n  <p class=\"login-msg\" id=\"login-msg\" role=\"alert\"></p>\n  <button class=\"btn primary\" id=\"login-go\" type=\"submit\" data-i18n=\"loginGo\">Anmelden</button>\n</form></div>\n<div class=\"timer-dock\" id=\"timer-dock\"></div>\n<div class=\"toast\" id=\"toast\" role=\"status\" hidden></div>\n<dialog id=\"cooking\" aria-label=\"Kochmodus\" data-i18n-label=\"cook\"><div id=\"cook-content\"></div></dialog>\n<dialog id=\"access\" aria-labelledby=\"ac-title\"><div class=\"ed\">\n  <div class=\"ed-top\"><button type=\"button\" class=\"icon-btn\" id=\"ac-close\" aria-label=\"Schließen\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M6 6l12 12M18 6 6 18\"/></svg></button><h2 id=\"ac-title\">Zugänge</h2><span></span></div>\n  <div class=\"ed-body\">\n    <p class=\"fld-note\" id=\"ac-intro\"></p>\n    <div class=\"import ac-new\" id=\"ac-new\" hidden><span class=\"imp-title\" id=\"ac-new-title\"></span><pre id=\"ac-new-text\"></pre><small>Das Passwort wird nirgends gespeichert und lässt sich später nicht mehr anzeigen. Gib es jetzt weiter.</small><div class=\"imp-row\"><button type=\"button\" class=\"btn ghost small\" id=\"ac-copy\">Text kopieren</button><button type=\"button\" class=\"btn ghost small\" id=\"ac-done\">Fertig</button></div></div>\n    <div id=\"ac-list\"></div>\n    <form id=\"ac-form\" class=\"ac-form\" novalidate autocomplete=\"off\">\n      <h3 id=\"ac-form-title\">Neuer Zugang</h3>\n      <label class=\"fld\"><span>Name</span><input id=\"ac-name\" maxlength=\"40\" autocomplete=\"off\" autocapitalize=\"none\" autocorrect=\"off\" spellcheck=\"false\"></label>\n      <div class=\"fld\"><span>Passwort</span><small>Mindestens 10 Zeichen. Freunde tippen es nur einmal: Das iPhone bietet an, es zu sichern, und füllt es danach mit Face ID aus.</small><div class=\"ac-pw\"><input id=\"ac-pass\" aria-label=\"Passwort\" maxlength=\"80\" autocomplete=\"off\" autocapitalize=\"none\" autocorrect=\"off\" spellcheck=\"false\"><button type=\"button\" class=\"btn ghost small\" id=\"ac-suggest\">Vorschlag</button></div></div>\n      <div class=\"imp-row\"><button class=\"btn primary small\" id=\"ac-add\" type=\"submit\">Zugang anlegen</button><button type=\"button\" class=\"btn ghost small\" id=\"ac-cancel\" hidden>Abbrechen</button></div>\n    </form>\n  </div>\n  <div class=\"ed-foot\"><p id=\"ac-status\" role=\"status\"></p></div>\n</div></dialog>\n<dialog id=\"editor\" aria-labelledby=\"ed-title\"><form id=\"ed-form\" class=\"ed\" novalidate>\n  <div class=\"ed-top\"><button type=\"button\" class=\"icon-btn\" id=\"ed-close\" aria-label=\"Schließen\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M6 6l12 12M18 6 6 18\"/></svg></button><h2 id=\"ed-title\">Neues Rezept</h2><span></span></div>\n  <div class=\"ed-body\">\n    <div class=\"import\" id=\"ed-import\" hidden>\n      <span class=\"imp-title\">Automatisch erkennen</span>\n      <small>Wähle Screenshots, Fotos oder ein PDF des Rezepts, oder füge den Rezepttext ein. Claude füllt das Formular aus; du prüfst und speicherst. Bei einem Link: Website als PDF sichern oder Screenshots machen.</small>\n      <div class=\"imp-row\"><label class=\"btn ghost small\" id=\"imp-shot-label\">Bild oder PDF wählen<input id=\"imp-shot\" type=\"file\" accept=\"image/*,application/pdf,.pdf\" multiple class=\"sr\"></label></div>\n      <textarea id=\"imp-text\" rows=\"3\" placeholder=\"Rezepttext hier einfügen\" aria-label=\"Rezepttext zum Erkennen\"></textarea>\n      <div class=\"imp-row\"><button type=\"button\" class=\"btn ghost small\" id=\"imp-run\">Text erkennen</button><button type=\"button\" class=\"btn ghost small\" id=\"imp-stop\" hidden>Abbrechen</button></div>\n      <p id=\"imp-status\" role=\"status\"></p>\n    </div>\n    <label class=\"fld\"><span>Name</span><input id=\"f-name\" maxlength=\"80\" autocomplete=\"off\"></label>\n    <div class=\"fld-row\">\n      <label class=\"fld\"><span>Kategorie</span><select id=\"f-category\"></select></label>\n      <label class=\"fld\"><span>Küche</span><select id=\"f-cuisine\"></select></label>\n    </div>\n    <div class=\"fld-row three\">\n      <label class=\"fld\"><span>Portionen</span><input id=\"f-portions\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"100\"></label>\n      <label class=\"fld\"><span>Gesamt (Min.)</span><input id=\"f-time\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"14400\" placeholder=\"z. B. 90\"></label>\n      <label class=\"fld\"><span>Aktiv (Min.)</span><input id=\"f-active\" type=\"number\" inputmode=\"numeric\" min=\"1\" max=\"14400\" placeholder=\"z. B. 30\"></label>\n    </div>\n    <p class=\"fld-note\">Gesamt zählt Warte-, Geh-, Kühl- und Backzeiten mit. Aktiv ist die reine Arbeitszeit; leer lassen, wenn beides gleich ist.</p>\n    <label class=\"fld\"><span>Kurzbeschreibung</span><input id=\"f-tag\" placeholder=\"z. B. Knusprig · schnell\" maxlength=\"80\" autocomplete=\"off\"></label>\n    <label class=\"fld\"><span>Quelle</span><small>Link zum Originalrezept oder Video, falls es einen gibt.</small><input id=\"f-source\" type=\"url\" inputmode=\"url\" placeholder=\"https://…\" maxlength=\"300\" autocomplete=\"off\"></label>\n    <div class=\"fld\"><span>Merkmale</span><small>„Schnell“ vergibt die Seite selbst, wenn die Gesamtzeit höchstens 30 Minuten beträgt.</small><div class=\"checks\"><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-vegetarisch\"><span>Vegetarisch</span></label><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-gaeste\"><span>Für Gäste</span></label><label class=\"check\"><input type=\"checkbox\" id=\"f-trait-vorbereiten\"><span>Gut vorzubereiten</span></label></div></div>\n    <div class=\"fld\"><span>Foto des Gerichts</span><small>JPG oder PNG. Aus einem PDF wird das Foto automatisch übernommen.</small><div class=\"photo-row\"><img id=\"f-photo-preview\" alt=\"\" hidden><label class=\"btn ghost small\">Foto wählen<input id=\"f-photo\" type=\"file\" accept=\"image/jpeg,image/png,image/webp\" class=\"sr\"></label><button type=\"button\" class=\"btn ghost small\" id=\"f-photo-remove\" hidden>Entfernen</button></div><p id=\"f-photo-status\" class=\"fld-note\" role=\"status\"></p></div>\n    <label class=\"fld\"><span>Zutaten</span><small>Eine pro Zeile, Menge zuerst: 200 g Mehl · 2 EL Olivenöl · Salz</small><textarea id=\"f-ingredients\" rows=\"7\"></textarea></label>\n    <div id=\"f-parse\" class=\"parse\" aria-live=\"polite\"></div>\n    <label class=\"fld\"><span>Zubereitung</span><small>Ein Schritt pro Zeile.</small><textarea id=\"f-steps\" rows=\"7\"></textarea></label>\n    <label class=\"fld\"><span>Notiz</span><textarea id=\"f-note\" rows=\"2\"></textarea></label>\n    <button type=\"button\" class=\"link-danger\" id=\"ed-delete\" hidden>Rezept löschen</button>\n  </div>\n  <div class=\"ed-foot\"><p id=\"ed-status\" role=\"status\"></p><button class=\"btn primary\" id=\"ed-save\" type=\"submit\">Speichern</button></div>\n</form></dialog>";
 document.body.insertAdjacentHTML('beforeend',SHELL);
 
 // ---------- Startbild: blaue Fläche mit Logo, nur auf der öffentlichen Website (zum Testen: ?splash) ----------
@@ -561,6 +596,7 @@ const SITE_URL='https://konstantinsalvamoser.github.io/pinch/';
 (()=>{
  let show=location.href.startsWith(SITE_URL);
  try{if(new URLSearchParams(location.search).has('splash'))show=true;}catch{}
+ try{if(sessionStorage.getItem('pinch-quiet')){sessionStorage.removeItem('pinch-quiet');show=false;}}catch{}   // nach An- oder Abmelden lädt die Seite neu: dann ohne Startbild
  if(!show)return;
  const calm=matchMedia('(prefers-reduced-motion: reduce)').matches,root=document.documentElement,began=performance.now();
  document.body.insertAdjacentHTML('afterbegin','<div class="splash" id="splash" role="img" aria-label="Pinch"><div class="splash-in">'
@@ -592,7 +628,8 @@ function labelMinutes(label){
  if(m)total+=m[2]?Math.ceil((Number(m[1])+Number(m[2]))/2/5)*5:Number(m[1]);
  return Math.round(total)||null;
 }
-recipes.forEach(r=>[r,...r.variants].forEach(o=>{if('timeLabel' in o){const m=labelMinutes(o.timeLabel);if(m)o.time=m;delete o.timeLabel;}}));
+function tidyRecipes(list){list.forEach(r=>[r,...r.variants].forEach(o=>{if('timeLabel' in o){const m=labelMinutes(o.timeLabel);if(m)o.time=m;delete o.timeLabel;}}));return list;}
+tidyRecipes(recipes);
 
 // ---------- Sprache: Deutsch und Englisch ----------
 // Oberfläche über STR; Rezepttexte über das Feld "en" am Rezept (fehlt es, bleibt das Rezept deutsch).
@@ -606,6 +643,7 @@ const STR={
   closeCook:'Kochmodus schließen',view:'Ansicht',stepsTab:'Schritte',back:'Zurück',done:'Fertig',next:'Weiter',
   home:'Pinch – zur Rezeptübersicht',backHome:'Zurück zur Übersicht',up:'Nach oben springen',edit:'Rezept bearbeiten',cook:'Kochmodus',newRecipe:'Neues Rezept',foot:'Pinch · Konstantins Rezepte',sections:'Bereiche',langSwitch:'Sprache: Deutsch. Auf Englisch umschalten',cuisine:'Küche',allCuisines:'Alle Küchen',
   sec:' Sek.',active:' aktiv',total:' gesamt',traits:'Merkmale',source:'Quelle',
+  loginTitle:'Anmelden',loginSub:'Konstantins Rezepte sind privat. Melde dich mit deinem Zugang an.',loginName:'Name',loginPass:'Passwort',loginGo:'Anmelden',loginBusy:'Wird geprüft …',loginBad:'Name oder Passwort stimmt nicht.',loginOld:'Dieser Browser ist für die Anmeldung zu alt. Bitte aktualisiere ihn.',loginAs:'Angemeldet als ',logout:'Abmelden',
   filter:'Filter',filterReset:'Zurücksetzen',share:'Rezept teilen',shareShort:'Teilen',print:'Drucken',linkCopied:'Link kopiert',linkManual:'Link zum Kopieren:',printOff:'Drucken geht in dieser Ansicht nicht.',openSite:'Rezept auf der Website öffnen',
   timerStart:'Timer starten: ',timerStop:'Timer beenden',timerDone:'Fertig',timerOpen:'Zum Schritt springen',timers:'Laufende Timer',stepN:'Schritt ',
   speak:'Schritte vorlesen',tapHint:'Tippe rechts für weiter, links für zurück.',jumpStep:'Zu Schritt ',
@@ -620,6 +658,7 @@ const STR={
   closeCook:'Close cook mode',view:'View',stepsTab:'Steps',back:'Back',done:'Done',next:'Next',
   home:'Pinch – back to all recipes',backHome:'Back to all recipes',up:'Jump to top',edit:'Edit recipe',cook:'Cook mode',newRecipe:'New recipe',foot:'Pinch · Konstantin’s recipes',sections:'Sections',langSwitch:'Language: English. Switch to German',cuisine:'Cuisine',allCuisines:'All cuisines',
   sec:' sec',active:' active',total:' total',traits:'Features',source:'Source',
+  loginTitle:'Sign in',loginSub:'Konstantin’s recipes are private. Sign in with your name and password.',loginName:'Name',loginPass:'Password',loginGo:'Sign in',loginBusy:'Checking …',loginBad:'Name or password is wrong.',loginOld:'This browser is too old to sign in. Please update it.',loginAs:'Signed in as ',logout:'Sign out',
   filter:'Filters',filterReset:'Reset',share:'Share recipe',shareShort:'Share',print:'Print',linkCopied:'Link copied',linkManual:'Link to copy:',printOff:'Printing is not available in this view.',openSite:'Open the recipe on the website',
   timerStart:'Start timer: ',timerStop:'Stop timer',timerDone:'Done',timerOpen:'Jump to step',timers:'Running timers',stepN:'Step ',
   speak:'Read steps aloud',tapHint:'Tap right for next, left for back.',jumpStep:'Go to step ',
@@ -649,6 +688,7 @@ function applyLang(){
  document.documentElement.lang=lang;app.lang=lang;
  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=tx(el.dataset.i18n);});
  document.querySelectorAll('[data-i18n-label]').forEach(el=>{el.setAttribute('aria-label',tx(el.dataset.i18nLabel));});
+ document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=tx(el.dataset.i18nPh);});
  document.querySelectorAll('#nav-lang [data-l]').forEach(el=>el.classList.toggle('on',el.dataset.l===lang));
  refreshCount();
 }
@@ -821,7 +861,7 @@ const heartLabel=on=>tx(on?'favOn':'favOff');
 function card(r){
  const v=r.variants[0],on=saved.includes(r.id),t=timeShort(r);
  return '<article class="card"><a class="card-link" href="#'+r.id+'" data-go="'+r.id+'"><div class="media">'
-  +(r.photo?'<img src="'+esc(thumb(r.photo))+'" alt="" loading="lazy">':catIcon(r.category,44,1.5))
+  +(r.photo?'<img '+pic(thumb(r.photo))+' alt="" loading="lazy">':catIcon(r.category,44,1.5))
   +(t?'<span class="badge">'+esc(t)+'</span>':'')+kitchenBadge(r)
   +'</div><div class="card-text"><h3>'+esc(rName(r))+'</h3><p class="card-meta">'+'<span>'+(v.approx?tx('approx'):'')+nOf(basePortions(r),'servings')+'</span>'+(r.variants.length>1?'<span>'+r.variants.length+' '+tx('variations')+'</span>':'')+'</p></div></a>'
   +'<button class="heart" data-favorite="'+r.id+'" aria-label="'+heartLabel(on)+'" aria-pressed="'+on+'">'+icon('heart',20)+'</button></article>';
@@ -856,7 +896,7 @@ function library(){
   +'<section class="list"><nav class="cats" aria-label="'+tx('categories')+'"><div class="cats-in">'+['Alle',...allCats()].map(c=>'<button class="cat" data-category="'+esc(c)+'" aria-pressed="'+(category===c)+'">'+esc(catName(c))+'</button>').join('')+'</div></nav>'
   +'<p class="list-info" aria-live="polite"><span id="count"></span><span id="list-title"></span></p>'
   +(kitchens.length>1?'<nav class="chips kitchens" aria-label="'+tx('cuisine')+'"><div class="chips-in">'+['Alle',...kitchens].map((c,i,all)=>(i===Math.ceil(all.length/2)?'<span class="brk"></span>':'')+'<button class="chip" data-cuisine="'+esc(c)+'" aria-pressed="'+(cuisine===c)+'">'+icon(CUISINE_ICON[c],18,1.9)+esc(c==='Alle'?tx('allCuisines'):cuisineName(c))+'</button>').join('')+'</div></nav>':'')
-  +'<div class="grid" id="grid"></div></section></div>';
+  +'<div class="grid" id="grid"></div></section>'+acctHtml()+'</div>';
  renderGrid();
  // gewählte Kapsel bzw. gewählten Reiter in den sichtbaren Bereich holen
  document.querySelectorAll('.chips.kitchens,.cats').forEach(row=>{
@@ -881,7 +921,7 @@ function detail(r,reset=true){
  if(reset){variantIndex=0;portions=basePortions(r);}
  const v=r.variants[variantIndex],index=recipes.indexOf(r),on=saved.includes(r.id),t=timeText(r,v),act=activeOf(r,v),marks=traitsOf(r),src=sourceOf(r),exact=portions===v.portions,photo=v.photo||r.photo,vx=vText(r,variantIndex);
  app.innerHTML='<article class="detail">'
-  +'<div class="hero'+(photo?'':' blank')+'">'+(photo?'<img src="'+esc(photo)+'" alt="'+esc(rName(r))+'">':catIcon(r.category,64,1.3))
+  +'<div class="hero'+(photo?'':' blank')+'">'+(photo?'<img '+pic(photo,thumb(photo))+' alt="'+esc(rName(r))+'">':catIcon(r.category,64,1.3))
   +'</div>'
   +'<div class="sheet"><div class="d-info"><p class="eyebrow">'+esc(catName(r.category))+(r.cuisine?' · '+esc(cuisineName(r.cuisine)):'')+'</p><h1>'+esc(rName(r))+'</h1><div class="facts">'
   +(act?'<span>'+icon('clock',16)+esc(fmtTime(act)+tx('active'))+'</span><span>'+icon('hourglass',16)+esc(t+tx('total'))+'</span>':t?'<span>'+icon('clock',16)+esc(t)+'</span>':'')+'<span>'+icon('list',16)+nOf(v.steps.length,'steps')+'</span>'+(r.variants.length>1?'<span>'+icon('layers',16)+r.variants.length+' '+tx('variations')+'</span>':'')
@@ -1178,7 +1218,7 @@ function shopping(){
   +(items.length?'<div class="shop-cols"><section class="shop-recipes"><div class="sec-head"><h2>'+tx('recipesTitle')+'</h2><span class="count">'+nOf(items.length,'recipes')+'</span></div>'
    +items.map(it=>{
     const r=recipes.find(x=>x.id===it.id),n=shop.items.indexOf(it),photo=r.variants[it.vi].photo||r.photo;
-    return '<div class="shop-r"><a class="shop-r-main" href="#'+r.id+'" data-go="'+r.id+'"><span class="shop-r-img">'+(photo?'<img src="'+esc(thumb(photo))+'" alt="" loading="lazy">':catIcon(r.category,22,1.6))+'</span><span class="shop-r-name">'+esc(rName(r))+(r.variants.length>1?'<small>'+esc(vText(r,it.vi).name)+'</small>':'')+'</span></a>'
+    return '<div class="shop-r"><a class="shop-r-main" href="#'+r.id+'" data-go="'+r.id+'"><span class="shop-r-img">'+(photo?'<img '+pic(thumb(photo))+' alt="" loading="lazy">':catIcon(r.category,22,1.6))+'</span><span class="shop-r-name">'+esc(rName(r))+(r.variants.length>1?'<small>'+esc(vText(r,it.vi).name)+'</small>':'')+'</span></a>'
      +'<div class="stepper" role="group" aria-label="'+tx('servingsLabel')+'"><button data-shop-less="'+n+'" aria-label="'+tx('less')+'"'+(it.p<=1?' disabled':'')+'>−</button><span class="stepper-n">'+it.p+'</span><button data-shop-more="'+n+'" aria-label="'+tx('more')+'"'+(it.p>=100?' disabled':'')+'>+</button></div>'
      +'<button class="icon-btn shop-x" data-shop-remove="'+n+'" aria-label="'+tx('shopRemove')+'">'+icon('x',17,2.4)+'</button></div>';
    }).join('')
@@ -1186,7 +1226,7 @@ function shopping(){
    +lines.map(l=>'<label class="ing"><input type="checkbox" data-shop-done="'+esc(l.id)+'"'+(shop.done.includes(l.id)?' checked':'')+'><span class="ing-name">'+esc(l.name)+(many?'<small>'+esc(l.from.join(' · '))+'</small>':'')+'</span><span class="amount">'+esc(l.qty)+'</span></label>').join('')
    +'</div><p class="fine">'+tx('shopDeviceNote')+'</p></section></div>'
    :'<div class="empty"><h3>'+tx('shopEmpty')+'</h3><p>'+tx('shopEmptyText')+'</p><button class="btn primary" data-tab="home">'+tx('showRecipes')+'</button></div>')
-  +'</div>';
+  +acctHtml()+'</div>';
  keepShop();updateBar();
 }
 const home=()=>shopOpen?shopping():library();
@@ -1276,6 +1316,8 @@ function navigate(id){
 }
 document.addEventListener('click',e=>{
  const hit=s=>e.target.closest(s);
+ if(hit('[data-logout]')){logout();return;}
+ if(hit('[data-access]')){openAccess();return;}
  // Filter-Menü: ein Tipp daneben schließt es nur (wie ein Menü am iPhone) und löst sonst nichts aus
  const menu=$('#filter-menu');
  if(menu&&!menu.hidden&&!hit('.filter')){filterMenu(false);e.preventDefault();return;}
@@ -1329,12 +1371,139 @@ document.addEventListener('click',e=>{
  if(hit('#plus'))setPortions(portions+1);
 });
 
+// ---------- Schloss: Anmeldung auf der Website ----------
+// Gibt es Zugänge, legt sync.py Rezepte und Fotos nur verschlüsselt ab und setzt window.PINCH_LOCK =
+// {it: Runden, u: {Kennung: [Salz, Nutzerschlüssel, Inhaltsschlüssel]}, d: Rezepte}. Das Passwort öffnet den
+// Nutzerschlüssel, der den Inhaltsschlüssel, der Rezepte und Fotos. Im Gerät bleibt nur der Nutzerschlüssel
+// (pinch-session); wird ein Zugang entfernt oder sein Passwort geändert, passt er nicht mehr.
+const PASS_ROUNDS=600000;
+const b64={enc:bytes=>{let s='';bytes.forEach(b=>{s+=String.fromCharCode(b);});return btoa(s);},dec:text=>Uint8Array.from(atob(text),c=>c.charCodeAt(0))};
+const userId=async name=>{
+ const hash=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('pinch:'+name.normalize('NFKC').trim().toLowerCase())));
+ return [...hash.slice(0,10)].map(b=>b.toString(16).padStart(2,'0')).join('');
+};
+const aesKey=raw=>crypto.subtle.importKey('raw',raw,'AES-GCM',false,['encrypt','decrypt']);
+const passKey=async(password,salt,rounds)=>{
+ const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(password.normalize('NFC')),'PBKDF2',false,['deriveKey']);
+ return crypto.subtle.deriveKey({name:'PBKDF2',hash:'SHA-256',salt,iterations:rounds},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+};
+// Verschlossene Daten: 12 Bytes Startwert, danach der Geheimtext
+const unseal=async(key,box)=>new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:box.slice(0,12)},key,box.slice(12)));
+const seal=async(key,plain)=>{
+ const iv=crypto.getRandomValues(new Uint8Array(12)),body=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plain));
+ const box=new Uint8Array(12+body.length);box.set(iv);box.set(body,12);return box;
+};
+const inflate=async bytes=>new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer());
+let contentKey=null,session=null,lockGo='';
+async function openSite(id,userKey){   // wirft, wenn der Zugang nicht (mehr) passt
+ const entry=LOCK.u[id];
+ if(!entry)throw new Error('user');
+ const key=await aesKey(await unseal(await aesKey(userKey),b64.dec(entry[2])));
+ const list=JSON.parse(new TextDecoder().decode(await inflate(await unseal(key,b64.dec(LOCK.d)))));
+ contentKey=key;recipes=tidyRecipes(list);
+}
+async function login(name,password){
+ const id=await userId(name),entry=LOCK.u[id];
+ const pass=await passKey(password,entry?b64.dec(entry[0]):new Uint8Array(16),LOCK.it);   // auch bei unbekanntem Namen rechnen, damit beides gleich lange dauert
+ if(!entry)throw new Error('user');
+ const userKey=await unseal(pass,b64.dec(entry[1]));
+ await openSite(id,userKey);
+ return {id,name:name.trim(),uk:b64.enc(userKey)};
+}
+function enterSite(){
+ document.body.classList.remove('locked');$('#login').hidden=true;
+ saved=saved.filter(id=>recipes.some(r=>r.id===id));
+ refreshCount();
+ if(window.pinchPhotos)window.pinchPhotos();
+ navigate(lockGo);
+}
+async function lockStart(go){
+ lockGo=go;document.body.classList.add('locked');
+ let kept=null;
+ try{kept=JSON.parse(localStorage.getItem('pinch-session'));}catch{}
+ if(kept&&kept.id&&kept.uk){
+  try{await openSite(kept.id,b64.dec(kept.uk));session=kept;enterSite();return;}
+  catch{try{localStorage.removeItem('pinch-session');}catch{}}
+ }
+ const go2=$('#login-go'),msg=$('#login-msg');
+ $('#login').hidden=false;
+ $('#login-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(go2.disabled)return;
+  const name=$('#login-name').value,password=$('#login-pass').value;
+  if(!name.trim()||!password){msg.textContent=tx('loginBad');return;}
+  go2.disabled=true;go2.textContent=tx('loginBusy');msg.textContent='';
+  let entered=null;
+  try{
+   if(!(window.crypto&&crypto.subtle&&window.DecompressionStream))throw new Error('old');
+   entered=await login(name,password);
+  }catch(err){
+   go2.disabled=false;go2.textContent=tx('loginGo');
+   msg.textContent=tx(err&&err.message==='old'?'loginOld':'loginBad');
+   $('#login-pass').select();
+   return;
+  }
+  // Dem Passwortspeicher des Geräts den Zugang anbieten; am iPhone füllt er ihn danach mit Face ID aus.
+  try{if(window.PasswordCredential)await navigator.credentials.store(new PasswordCredential({id:entered.name,name:entered.name,password}));}catch{}
+  let keptNow=false;
+  try{localStorage.setItem('pinch-session',JSON.stringify(entered));keptNow=localStorage.getItem('pinch-session')!==null;}catch{}
+  // Neu laden: daran erkennen Browser eine geglückte Anmeldung und bieten an, das Passwort zu sichern.
+  if(keptNow){try{sessionStorage.setItem('pinch-quiet','1');}catch{}location.reload();return;}
+  session=entered;enterSite();
+ });
+}
+function logout(){
+ try{localStorage.removeItem('pinch-session');}catch{}
+ try{sessionStorage.setItem('pinch-quiet','1');}catch{}
+ location.reload();
+}
+// Fotos liegen verschlüsselt als name.jpg.enc; sie werden beim ersten Gebrauch geholt, geöffnet und als Bild im Speicher gehalten.
+const photoFile=p=>LOCK&&!p.startsWith('data:')?p+'.enc':p;
+const BLANK='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+const pics=new Map();
+async function loadPic(path){
+ const have=pics.get(path);
+ if(have)return have;
+ const job=(async()=>{
+  const get=async url=>{const res=await fetch(url);if(!res.ok)throw new Error('photo');return new Uint8Array(await res.arrayBuffer());};
+  let raw;
+  try{raw=await unseal(contentKey,await get(photoFile(path)));}
+  catch{raw=await unseal(contentKey,await get(photoFile(path)+'?'+Date.now()));}   // im Gerät lag noch die Fassung mit einem früheren Schlüssel: am Speicher vorbei frisch holen
+  return URL.createObjectURL(new Blob([raw],{type:'image/jpeg'}));
+ })();
+ pics.set(path,job);
+ try{const url=await job;pics.set(path,url);return url;}
+ catch(err){pics.delete(path);throw err;}
+}
+// Attribute für ein <img>: ohne Schloss die Adresse; mit Schloss das geöffnete Bild oder ein Platzhalter (first: schon geöffnete kleine Fassung), der gleich ersetzt wird
+function pic(path,first){
+ if(!LOCK||path.startsWith('data:'))return 'src="'+esc(path)+'"';
+ const have=pics.get(path),pre=first&&pics.get(first);
+ if(typeof have==='string')return 'src="'+have+'"';
+ return 'src="'+(typeof pre==='string'?pre:BLANK)+'" data-pic="'+esc(path)+'"';
+}
+if(LOCK){
+ const near=new IntersectionObserver(list=>list.forEach(en=>{
+  if(!en.isIntersecting)return;
+  const img=en.target,path=img.dataset.pic;
+  near.unobserve(img);
+  if(path)loadPic(path).then(url=>{if(img.dataset.pic===path){img.src=url;img.removeAttribute('data-pic');}}).catch(()=>{});
+ }),{rootMargin:'600px'});
+ new MutationObserver(()=>document.querySelectorAll('img[data-pic]:not([data-seen])').forEach(img=>{img.dataset.seen='1';near.observe(img);})).observe(document.body,{childList:true,subtree:true});
+}
+// Zeile am Ende der Übersicht: wer angemeldet ist und Abmelden (Website); Zugänge verwalten (nur wer die Seite bearbeiten darf)
+function acctHtml(){
+ const n=access&&access.users?access.users.length:0;
+ return '<p class="acct'+(session?'':' edit-only')+'">'+(session?'<span>'+tx('loginAs')+esc(session.name)+'</span><button data-logout>'+tx('logout')+'</button>':'')
+  +'<button class="edit-only" data-access>Zugänge'+(n?' · '+n:'')+'</button></p>';
+}
+
 // Einstieg: nach dem Speichern das betroffene Rezept, sonst der Anker aus dem Link.
 let start=store.get('pinch-go');
 store.del('pinch-go');
 if(start===null){try{start=decodeURIComponent(location.hash.slice(1)).split('/').pop();}catch{start='';}}
 applyLang();
-navigate(start);
+if(LOCK)lockStart(start);else navigate(start);
 renderTimers();timerTick();
 
 // ---------- Zutaten pro Schritt: hinterlegt (uses) oder aus dem Text erkannt ----------
@@ -1356,7 +1525,9 @@ function pageHtml(list){
  const LS=String.fromCharCode(8232),PS=String.fromCharCode(8233);
  const json=JSON.stringify(list).replace(/</g,'\\u003c').split(LS).join('\\u2028').split(PS).join('\\u2029');
  const close='</'+'script>';
- return SKELETON+PAGE_HEAD+'\n<style id="app-css">'+text('app-css')+'</style>\n<script id="recipes-data" type="application/json">'+json+close+'\n<script id="app-js">'+text('app-js')+close+'\n</body></html>';
+ return SKELETON+PAGE_HEAD+'\n<style id="app-css">'+text('app-css')+'</style>\n<script id="recipes-data" type="application/json">'+json+close+'\n'
+  +(access?'<script id="access-data" type="application/json">'+JSON.stringify(access).replace(/</g,'\\u003c')+close+'\n':'')
+  +'<script id="app-js">'+text('app-js')+close+'\n</body></html>';
 }
 const SAVE_MSG={
  conflict:'Die Seite wurde gerade an anderer Stelle geändert und lädt neu. Dein Entwurf bleibt erhalten.',
@@ -1794,6 +1965,123 @@ $('#imp-shot').addEventListener('change',async e=>{
 });
 editor.addEventListener('close',()=>{if(importCtl)importCtl.abort();});
 
+// ---------- Zugänge: Namen und Passwörter für die Website (nur wer die Seite bearbeiten darf) ----------
+// Stehen in der Seite im Block access-data: Inhaltsschlüssel (key, frühere unter old) und je Zugang Name, Kennung, Salz,
+// Nutzerschlüssel offen (uk) und mit dem Passwort verschlossen (wrap). Passwörter selbst werden nicht gespeichert.
+// sync.py baut daraus das Schloss der Website und übernimmt den Block nie dorthin.
+const accessDlg=$('#access');
+let acReset=null,acSure=null;   // acReset: Stelle des Zugangs, der ein neues Passwort bekommt; acSure: Stelle, deren Entfernen bestätigt werden muss
+const acStatus=(msg,err=false)=>{const p=$('#ac-status');p.textContent=msg||'';p.classList.toggle('err',!!err);};
+const acBusy=on=>{accessDlg.querySelectorAll('button:not(#ac-close),input').forEach(el=>{el.disabled=on;});};
+function suggestPass(){
+ const abc='abcdefghijkmnpqrstuvwxyz23456789',r=crypto.getRandomValues(new Uint8Array(12));
+ return [0,4,8].map(i=>[...r.slice(i,i+4)].map(b=>abc[b%32]).join('')).join('-');
+}
+const accessNote=o=>'Pinch – Konstantins Rezepte\n'+SITE_URL+'\nName: '+o.name+'\nPasswort: '+o.pw;
+function renderAccess(){
+ const users=(access&&access.users)||[];
+ let fresh=null;
+ try{fresh=JSON.parse(store.get('pinch-access-new')||'null');}catch{}
+ $('#ac-intro').textContent=users.length
+  ?'Die Website ist verschlossen: Rezepte und Fotos sind nur mit einem dieser Zugänge lesbar. Änderungen kommen mit dem nächsten Abgleich auf die Website.'
+  :'Noch kein Zugang: Die Website ist für alle offen. Mit dem ersten Zugang wird sie beim nächsten Abgleich verschlossen; lege deshalb zuerst einen für dich selbst an.';
+ $('#ac-new').hidden=!fresh;
+ if(fresh){$('#ac-new-title').textContent='Zugang für '+fresh.name;$('#ac-new-text').textContent=accessNote(fresh);}
+ $('#ac-list').innerHTML=users.map((u,i)=>'<div class="ac-user"><span class="ac-name">'+esc(u.name)+'</span>'
+  +'<button type="button" class="btn ghost small" data-ac-reset="'+i+'"'+(acReset===i?' aria-pressed="true"':'')+'>Neues Passwort</button>'
+  +'<button type="button" class="btn ghost small ac-del" data-ac-remove="'+i+'">'+(acSure===i?(users.length===1?'Website öffnen?':'Wirklich entfernen?'):'Entfernen')+'</button></div>').join('');
+ const target=acReset!==null?users[acReset]:null;
+ $('#ac-form-title').textContent=target?'Neues Passwort für '+target.name:'Neuer Zugang';
+ $('#ac-name').value=target?target.name:$('#ac-name').value;
+ $('#ac-name').readOnly=!!target;
+ $('#ac-add').textContent=target?'Passwort ändern':'Zugang anlegen';
+ $('#ac-cancel').hidden=!target;
+}
+function openAccess(){
+ acReset=acSure=null;$('#ac-name').value='';$('#ac-pass').value='';acStatus('');
+ renderAccess();
+ if(!accessDlg.open)accessDlg.showModal();
+ if(!(window.crypto&&crypto.subtle))acStatus('In dieser Ansicht lassen sich keine Zugänge anlegen.',true);
+}
+async function saveAccess(next){
+ if(!artifactApi){acStatus(SAVE_MSG.read_only,true);return false;}
+ const was=access;
+ access=next;acBusy(true);acStatus('Wird gespeichert …');
+ const html=pageHtml(recipes);
+ for(let tries=0;;tries++){
+  try{await artifactApi.publish(html);break;}
+  catch(e){
+   const code=(e&&e.code)||'upstream_error';
+   if(code==='upstream_error'&&tries<1){await new Promise(done=>setTimeout(done,600+Math.random()*900));continue;}
+   access=was;acBusy(false);
+   if(READ_ONLY.includes(code)){setCanEdit(false);acStatus(SAVE_MSG.read_only,true);}
+   else acStatus(code==='conflict'?'Die Seite wurde gerade an anderer Stelle geändert. Lade sie neu und versuch es noch einmal.':(SAVE_MSG[code]||SAVE_MSG.upstream_error),true);
+   return false;
+  }
+ }
+ acBusy(false);acStatus('');
+ return true;
+}
+// Neuer Stand der Zugänge. Fällt ein Zugang weg oder ändert sich ein Passwort, gibt es einen neuen Inhaltsschlüssel,
+// damit der alte Zugang auch mit gemerktem Schlüssel nichts Neues mehr lesen kann.
+function nextAccess(users,rotate){
+ const now=access||{};
+ const next={v:1,it:PASS_ROUNDS,key:now.key||'',old:[...(now.old||[])],users};
+ if(!next.key||rotate){
+  if(next.key)next.old=[next.key,...next.old].slice(0,5);
+  next.key=b64.enc(crypto.getRandomValues(new Uint8Array(32)));
+ }
+ return next;
+}
+$('#ac-form').addEventListener('submit',async e=>{
+ e.preventDefault();
+ if($('#ac-add').disabled)return;
+ const users=[...((access&&access.users)||[])],name=$('#ac-name').value.normalize('NFKC').trim(),pw=$('#ac-pass').value;
+ if(!name){acStatus('Bitte einen Namen eintragen.',true);return;}
+ if(pw.length<10){acStatus('Das Passwort braucht mindestens 10 Zeichen. „Vorschlag“ erzeugt ein sicheres.',true);return;}
+ if(pw!==pw.trim()){acStatus('Das Passwort darf nicht mit einem Leerzeichen beginnen oder enden.',true);return;}
+ acBusy(true);acStatus('Wird gespeichert …');
+ let user;
+ try{
+  const id=await userId(name);
+  if(acReset===null&&users.some(u=>u.id===id)){acBusy(false);acStatus('Diesen Namen gibt es schon. Groß- und Kleinschreibung zählt nicht.',true);return;}
+  const salt=crypto.getRandomValues(new Uint8Array(16)),userKey=crypto.getRandomValues(new Uint8Array(32));
+  user={name,id,salt:b64.enc(salt),wrap:b64.enc(await seal(await passKey(pw,salt,PASS_ROUNDS),userKey)),uk:b64.enc(userKey)};
+ }catch{acBusy(false);acStatus('Der Zugang ließ sich in dieser Ansicht nicht anlegen.',true);return;}
+ const reset=acReset!==null;
+ if(reset)users[acReset]=user;else users.push(user);
+ if(!await saveAccess(nextAccess(users,reset)))return;
+ store.set('pinch-access-new',JSON.stringify({name,pw}));
+ acReset=acSure=null;$('#ac-name').value='';$('#ac-pass').value='';
+ renderAccess();
+ $('#ac-new').scrollIntoView({block:'nearest'});
+ if(!activeRecipe)home();
+});
+accessDlg.addEventListener('click',async e=>{
+ const hit=s=>e.target.closest(s);
+ if(hit('#ac-close')){accessDlg.close();return;}
+ if(hit('#ac-suggest')){$('#ac-pass').value=suggestPass();acStatus('');return;}
+ if(hit('#ac-cancel')){acReset=null;$('#ac-name').value='';$('#ac-pass').value='';acStatus('');renderAccess();return;}
+ if(hit('#ac-done')){store.del('pinch-access-new');renderAccess();return;}
+ if(hit('#ac-copy')){
+  let fresh=null;
+  try{fresh=JSON.parse(store.get('pinch-access-new')||'null');}catch{}
+  if(!fresh)return;
+  try{await navigator.clipboard.writeText(accessNote(fresh));acStatus('Kopiert.');}catch{acStatus('Kopieren geht in dieser Ansicht nicht. Markiere den Text und kopiere ihn von Hand.',true);}
+  return;
+ }
+ const reset=hit('[data-ac-reset]'),remove=hit('[data-ac-remove]');
+ if(reset){const i=Number(reset.dataset.acReset);acReset=acReset===i?null:i;acSure=null;$('#ac-name').value='';$('#ac-pass').value='';acStatus('');renderAccess();if(acReset!==null)$('#ac-pass').focus();return;}
+ if(remove){
+  const i=Number(remove.dataset.acRemove);
+  if(acSure!==i){acSure=i;acReset=null;renderAccess();return;}
+  const users=((access&&access.users)||[]).filter((u,n)=>n!==i);
+  acSure=acReset=null;
+  if(await saveAccess(nextAccess(users,true))){renderAccess();if(!activeRecipe)home();}
+  else renderAccess();
+ }
+});
+
 // Bearbeiten nur, wo die Seite sich selbst speichern darf (für Gäste mit Link bleibt alles nur lesbar).
 (async()=>{
  try{
@@ -1801,6 +2089,7 @@ editor.addEventListener('close',()=>{if(importCtl)importCtl.abort();});
   const [art,user,smp]=await Promise.all([use('artifact'),use('user'),use('sample')]);
   artifactApi=art||null;
   setCanEdit(!!art&&(user?await user.canEdit():true));
+  if(canEdit&&store.get('pinch-access-new'))openAccess();   // nach dem Speichern lädt die Ansicht neu: den frisch angelegten Zugang weiter zeigen
   if(canEdit&&smp){
    sampleApi=smp;
    const caps=await smp.limits().catch(()=>null);
