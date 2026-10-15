@@ -1,6 +1,6 @@
 // Pinch: hält die Website ohne Netz nutzbar. Diese Datei schreibt sync.py; nicht von Hand ändern.
 // Bei Änderungen am Verhalten die Nummer in CACHE erhöhen, dann legen die Geräte ihren Speicher neu an.
-const CACHE='pinch-1';
+const CACHE='pinch-2';
 const SHELL=['./','manifest.webmanifest','icon-180.png','icon-192.png','icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
@@ -15,7 +15,7 @@ async function page(e){
  return Promise.race([fresh.catch(()=>cached),new Promise(done=>setTimeout(()=>done(cached),4000))]);
 }
 // Fotos: sofort aus dem Speicher, im Hintergrund auffrischen (ein ersetztes Foto kommt so beim nächsten Öffnen an).
-// Ohne Netz und ohne gespeichertes großes Foto wird die kleine Vorschau gezeigt.
+// Ohne Netz und ohne gespeichertes großes Foto wird die kleine Vorschau gezeigt. Verschlüsselte Fotos (name.jpg.enc) laufen genauso.
 async function photo(e,url){
  const hit=await caches.match(e.request);
  const fresh=fetch(e.request).then(res=>keep(e.request,res));
@@ -23,7 +23,7 @@ async function photo(e,url){
  if(hit)return hit;
  try{return await fresh;}
  catch(err){
-  const small=await caches.match(url.pathname.replace(/(-s)?\.jpg$/,'-s.jpg'));
+  const small=await caches.match(url.pathname.replace(/(-s)?\.jpg(\.enc)?$/,'-s.jpg$2'));
   if(small)return small;
   throw err;
  }
@@ -40,7 +40,7 @@ self.addEventListener('fetch',e=>{
   if(url.pathname===start||url.pathname===start+'index.html')e.respondWith(page(e));
   else e.respondWith(fetch(req).catch(()=>caches.match('./').then(hit=>hit||Response.error())));
  }
- else if(own&&/\.jpg$/.test(url.pathname))e.respondWith(photo(e,url));
+ else if(own&&/\.jpg(\.enc)?$/.test(url.pathname)&&!/\/r\//.test(url.pathname))e.respondWith(photo(e,url));
  else if(own||/^fonts\.(googleapis|gstatic)\.com$/.test(url.hostname))e.respondWith(asset(req));
 });
 // Die Seite meldet nach dem Laden ihre Fotos: kleine Vorschauen vorab speichern, Fotos gelöschter Rezepte entfernen.
@@ -49,7 +49,7 @@ self.addEventListener('message',e=>{
  if(!d||d.type!=='photos'||!Array.isArray(d.small)||!Array.isArray(d.all))return;
  e.waitUntil((async()=>{
   const c=await caches.open(CACHE),used=new Set(d.all.map(p=>new URL(p,self.registration.scope).href));
-  for(const req of await c.keys())if(/\.jpg$/.test(new URL(req.url).pathname)&&!used.has(req.url))await c.delete(req);
+  for(const req of await c.keys())if(/\.jpg(\.enc)?$/.test(new URL(req.url).pathname)&&!used.has(req.url))await c.delete(req);
   for(const p of d.small){try{if(!(await c.match(p))){const res=await fetch(p);if(res.ok)await c.put(p,res);}}catch{}}
  })());
 });
